@@ -1732,7 +1732,6 @@ export default function AdminPanel() {
           <button className="btn-icon" style={{ position:"relative" }}>🔔
             <div style={{ position:"absolute", top:4, right:4, width:6, height:6, borderRadius:"50%", background:"#ef4444", border:"2px solid #050814" }}/>
           </button>
-          <div title={admin.email} style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,rgba(124,47,255,.22),rgba(139,92,246,.14))", border:"1px solid rgba(124,47,255,.25)", display:"grid", placeItems:"center", fontSize:".62rem", fontWeight:900, color:"#9d7fff", cursor:"pointer" }}>{admin.initials}</div>
           <button className="btn-primary" onClick={() => { setEditCourse(null); setBuilderOpen(true); }}>+ New Course</button>
         </header>
         <div className="lv-content">

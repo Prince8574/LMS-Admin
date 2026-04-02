@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../frontend/Auth/services/authService';
+import { AnimatedAvatarSmall } from './AnimatedAvatarSmall';
 
 const C = {
   em: "#7c2fff", t2: "#6b5b8e", t3: "#1a1540",
@@ -65,6 +66,21 @@ export function Sidebar() {
     }).catch(() => {});
   }, [token]);
 
+  // Read avatar from localStorage
+  const [avatarUrl, setAvatarUrl] = useState(localStorage.getItem('admin_avatar') || null);
+
+  // Listen for avatar updates
+  useEffect(() => {
+    const onStorage = () => setAvatarUrl(localStorage.getItem('admin_avatar') || null);
+    window.addEventListener('storage', onStorage);
+    // Also poll every 2s in case same-tab update
+    const interval = setInterval(() => {
+      const a = localStorage.getItem('admin_avatar');
+      setAvatarUrl(prev => prev !== a ? a : prev);
+    }, 2000);
+    return () => { window.removeEventListener('storage', onStorage); clearInterval(interval); };
+  }, []);
+
   const initials = adminName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
   return (
@@ -107,7 +123,7 @@ export function Sidebar() {
 
       <div className="sb-bottom">
         <div className="sb-user">
-          <div className="sb-avatar-core">{initials}</div>
+          <AnimatedAvatarSmall avatarUrl={avatarUrl} initials={initials} size={34} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: '.8rem', fontWeight: 600 }}>{adminName}</div>
             <div style={{ fontFamily: 'DM Mono,monospace', fontSize: '.58rem', color: C.t2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{adminEmail}</div>

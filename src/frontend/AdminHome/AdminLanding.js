@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authService } from "../Auth/services/authService";
 import * as THREE from "three";
 import { C, GR, FEATURES, STATS, TESTIMONIALS } from "./constants";
+import { AnimatedAvatarSmall } from "../../components/AnimatedAvatarSmall";
 import "./AdminLanding.css";
 
 /* ════════════════════════════
@@ -613,9 +614,11 @@ export default function AdminLanding() {
             {loggedIn && (
               <div style={{display:'flex',alignItems:'center',gap:10}}>
                 <div className="nav-avatar-wrap" title={adminUser?.name || "Admin"}>
-                  <div className="nav-avatar">
-                    {adminUser?.name ? adminUser.name.slice(0,2).toUpperCase() : "AD"}
-                  </div>
+                  <AnimatedAvatarSmall
+                    avatarUrl={localStorage.getItem('admin_avatar')}
+                    initials={adminUser?.name ? adminUser.name.slice(0,2).toUpperCase() : 'AD'}
+                    size={38}
+                  />
                   <div className="avatar-status"/>
                 </div>
                 <div style={{display:'flex',flexDirection:'column',lineHeight:1.2}}>
