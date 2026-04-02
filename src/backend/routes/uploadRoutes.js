@@ -33,7 +33,7 @@ const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 102
 router.post("/thumbnail", protect, upload.single("thumbnail"), (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
 
-  // Copy to student backend uploads so it's available without admin server
+  // Copy to student backend uploads so it's available on student server too
   try {
     const src  = path.join(uploadDir, req.file.filename);
     const dest = path.join(studentUploadDir, req.file.filename);
@@ -43,10 +43,9 @@ router.post("/thumbnail", protect, upload.single("thumbnail"), (req, res) => {
     console.error("Could not copy to student uploads:", e.message);
   }
 
-  const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-  // Also return student-server URL so it works without admin server
-  const studentUrl = `http://localhost:5001/uploads/${req.file.filename}`;
-  res.json({ success: true, url: studentUrl });
+  // Return admin server URL (port 5000) — admin frontend uses this
+  const adminUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+  res.json({ success: true, url: adminUrl });
 });
 
 module.exports = router;

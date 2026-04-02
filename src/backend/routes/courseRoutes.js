@@ -4,7 +4,7 @@ const { protect } = require("../middleware/authMiddleware");
 const { create, getAll, getOne, update, remove, publish, stats } = require("../controllers/courseController");
 
 router.get("/stats",                    protect, stats);
-router.get("/",                         getAll);
+router.get("/",                         protect, getAll);
 router.get("/:id",                      getOne);
 router.post("/",                        protect, create);
 router.put("/:id",                      protect, update);

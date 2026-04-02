@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "../../components/Sidebar";
 import * as THREE from "three";
-import { gsap } from "gsap";
 
 const G = {
   purple:"linear-gradient(135deg,#7c2fff,#8b5cf6)",
@@ -72,11 +71,11 @@ function useBg(ref) {
     // Small delay to ensure canvas is mounted in DOM
     const timer = setTimeout(function() { init(); }, 50);
     return function() { clearTimeout(timer); cancelAnimationFrame(af); if(R) R.dispose(); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }
 
 /* ══════════════════════════════════════ COURSE DATA ══════════════════════════════════════ */
-const COURSES = [];
 
 const BADGE_MAP = {
   Bestseller:{bg:"rgba(240,165,0,.14)",col:"#f0a500",bord:"rgba(240,165,0,.3)"},
@@ -295,6 +294,7 @@ function Toggle({ checked, onChange }) {
 }
 
 function Toast({ msg, onDone }) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { const t = setTimeout(onDone, 3400); return () => clearTimeout(t); }, []);
   return (
     <div className="toast-el">
@@ -395,43 +395,35 @@ function CourseCard({ course: c, idx, onOpen, onEdit, onDelete }) {
               </button>
             </>
           ) : (
-            <>
-              <div>
-                <div style={{ display:"flex", alignItems:"baseline", gap:5 }}>
-                  <span style={{ fontFamily:"'Fraunces',serif", fontSize:"1rem", fontWeight:900, color:"#9d7fff" }}>{c.price===0?"FREE":`₹${c.price.toLocaleString()}`}</span>
-                  {c.price > 0 && c.originalPrice > c.price && (
-                    <>
-                      <span style={{ fontSize:".68rem", color:"#193348", textDecoration:"line-through" }}>₹{c.originalPrice.toLocaleString()}</span>
-                      <span style={{ fontSize:".62rem", fontWeight:800, color:"#4ade80", background:"rgba(74,222,128,.1)", padding:"1px 5px", borderRadius:4 }}>{disc}% off</span>
-                    </>
-                  )}
-                </div>
-              </div>
-              <button onClick={e => { e.stopPropagation(); onEdit(c); }}
-                style={{ padding:"7px 12px", borderRadius:9, border:"none", fontFamily:"'Satoshi',sans-serif", fontSize:".7rem", fontWeight:800, cursor:"pointer", flexShrink:0, background:"linear-gradient(135deg,#7c2fff,#8b5cf6)", color:"#050814" }}>
-                ✏ Manage
-              </button>
-            </>
+            <div style={{ display:"flex", alignItems:"baseline", gap:5 }}>
+              <span style={{ fontFamily:"'Fraunces',serif", fontSize:"1rem", fontWeight:900, color:"#9d7fff" }}>{c.price===0?"FREE":`₹${c.price.toLocaleString()}`}</span>
+              {c.price > 0 && c.originalPrice > c.price && (
+                <>
+                  <span style={{ fontSize:".68rem", color:"#193348", textDecoration:"line-through" }}>₹{c.originalPrice.toLocaleString()}</span>
+                  <span style={{ fontSize:".62rem", fontWeight:800, color:"#4ade80", background:"rgba(74,222,128,.1)", padding:"1px 5px", borderRadius:4 }}>{disc}% off</span>
+                </>
+              )}
+            </div>
           )}
         </div>
-        <div style={{ display:"flex", gap:6, paddingTop:3, borderTop:"1px solid rgba(255,255,255,.04)" }}>
+        <div style={{ display:"flex", gap:6, paddingTop:6, borderTop:"1px solid rgba(255,255,255,.07)" }}>
           <button onClick={e => { e.stopPropagation(); onEdit(c); }}
-            style={{ flex:1, padding:6, borderRadius:8, border:"1px solid rgba(255,255,255,.07)", background:"transparent", color:"#4d7a9e", fontFamily:"'Satoshi',sans-serif", fontSize:".68rem", fontWeight:600, cursor:"pointer", transition:"all .18s" }}
-            onMouseOver={e => { e.currentTarget.style.color="#9d7fff"; e.currentTarget.style.borderColor="rgba(124,47,255,.25)"; }}
-            onMouseOut={e => { e.currentTarget.style.color="#4d7a9e"; e.currentTarget.style.borderColor="rgba(255,255,255,.07)"; }}>
+            style={{ flex:1, padding:"7px 6px", borderRadius:8, border:"1px solid rgba(124,47,255,.35)", background:"rgba(124,47,255,.12)", color:"#9d7fff", fontFamily:"'Satoshi',sans-serif", fontSize:".68rem", fontWeight:700, cursor:"pointer", transition:"all .18s", display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}
+            onMouseOver={e => { e.currentTarget.style.background="rgba(124,47,255,.25)"; e.currentTarget.style.borderColor="rgba(124,47,255,.6)"; e.currentTarget.style.color="#b89fff"; }}
+            onMouseOut={e => { e.currentTarget.style.background="rgba(124,47,255,.12)"; e.currentTarget.style.borderColor="rgba(124,47,255,.35)"; e.currentTarget.style.color="#9d7fff"; }}>
             ✏ Edit
           </button>
           <button
-            style={{ padding:"6px 9px", borderRadius:8, border:"1px solid rgba(255,255,255,.07)", background:"transparent", color:"#4d7a9e", fontSize:".68rem", cursor:"pointer", transition:"all .18s" }}
-            onMouseOver={e => { e.currentTarget.style.color="#00d4aa"; e.currentTarget.style.borderColor="rgba(0,212,170,.25)"; }}
-            onMouseOut={e => { e.currentTarget.style.color="#4d7a9e"; e.currentTarget.style.borderColor="rgba(255,255,255,.07)"; }}
+            style={{ flex:1, padding:"7px 6px", borderRadius:8, border:"1px solid rgba(0,212,170,.3)", background:"rgba(0,212,170,.1)", color:"#00d4aa", fontFamily:"'Satoshi',sans-serif", fontSize:".68rem", fontWeight:700, cursor:"pointer", transition:"all .18s", display:"flex", alignItems:"center", justifyContent:"center", gap:4 }}
+            onMouseOver={e => { e.currentTarget.style.background="rgba(0,212,170,.22)"; e.currentTarget.style.borderColor="rgba(0,212,170,.55)"; e.currentTarget.style.color="#00f0c0"; }}
+            onMouseOut={e => { e.currentTarget.style.background="rgba(0,212,170,.1)"; e.currentTarget.style.borderColor="rgba(0,212,170,.3)"; e.currentTarget.style.color="#00d4aa"; }}
             onClick={e => { e.stopPropagation(); window.open(`http://localhost:3001/learn/${c._id || c.id}`, "_blank"); }}>
             👁 Preview
           </button>
           <button onClick={e => { e.stopPropagation(); onDelete(c.id); }}
-            style={{ padding:"6px 9px", borderRadius:8, border:"1px solid rgba(255,255,255,.07)", background:"transparent", color:"#4d7a9e", fontSize:".68rem", cursor:"pointer", transition:"all .18s" }}
-            onMouseOver={e => { e.currentTarget.style.color="#ef4444"; e.currentTarget.style.borderColor="rgba(239,68,68,.22)"; }}
-            onMouseOut={e => { e.currentTarget.style.color="#4d7a9e"; e.currentTarget.style.borderColor="rgba(255,255,255,.07)"; }}>
+            style={{ padding:"7px 10px", borderRadius:8, border:"1px solid rgba(239,68,68,.25)", background:"rgba(239,68,68,.08)", color:"#ef4444", fontSize:".68rem", cursor:"pointer", transition:"all .18s", display:"flex", alignItems:"center", justifyContent:"center" }}
+            onMouseOver={e => { e.currentTarget.style.background="rgba(239,68,68,.2)"; e.currentTarget.style.borderColor="rgba(239,68,68,.5)"; }}
+            onMouseOut={e => { e.currentTarget.style.background="rgba(239,68,68,.08)"; e.currentTarget.style.borderColor="rgba(239,68,68,.25)"; }}>
             🗑
           </button>
         </div>
@@ -527,6 +519,7 @@ function CourseModal({ course: c, onClose, onEdit, onDelete }) {
     const esc = e => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", esc);
     return () => window.removeEventListener("keydown", esc);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const disc = c.price > 0 ? Math.round((1 - c.price / c.originalPrice) * 100) : 0;
   const pGrad = c.progress === 100 ? "linear-gradient(90deg,#4ade80,#00d4aa)" : "linear-gradient(90deg,#7c2fff,#8b5cf6)";
@@ -687,7 +680,7 @@ const DEFAULT_SECTIONS = [
 const TYPE_MAP = {video:"▶",doc:"📄",quiz:"❓",assignment:"📝",live:"🔴",article:"✍️"};
 const TYPE_COLORS = {video:"#7c2fff",doc:"#3b82f6",quiz:"#f02079",assignment:"#f0a500",live:"#ef4444",article:"#00d4aa"};
 
-function CourseBuilder({ onClose, editCourse, showToast, onSaved }) {
+function CourseBuilder({ onClose, editCourse, showToast, onSaved, admin = {} }) {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [sections, setSections] = useState(
@@ -756,20 +749,34 @@ function CourseBuilder({ onClose, editCourse, showToast, onSaved }) {
   });
   const uf = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
-  const buildPayload = (status) => ({
-    ...form,
-    curriculum:    sections,
-    quiz:          mediaType === "quiz" ? { ...quizSettings, questions: quizQuestions } : null,
-    assignment:    mediaType === "assignment" ? form.assignment : null,
-    mediaType,
-    status,
-    isPublished:   status === "published",
-    tags:          Array.isArray(form.skills) ? form.skills : (form.skills || "").split(",").map(s => s.trim()).filter(Boolean),
-    outcomes:      Array.isArray(form.outcomes) ? form.outcomes.filter(o => o.trim()) : [],
-    instructor:    { name: "Admin", initials: "AD" },
-    thumbnail:     thumbnail.link || thumbnail.preview || "",
-    promoVideoUrl: promoVideo.link || (promoVideo.preview?.startsWith("blob:") ? "" : promoVideo.preview) || "",
-  });
+  const buildPayload = (status) => {
+    // Get admin info from prop or token
+    let instructorName = admin?.name || "Admin";
+    let instructorInitials = admin?.initials || "AD";
+    if (instructorName === "Admin") {
+      try {
+        const token = localStorage.getItem("admin_token");
+        if (token) {
+          const p = JSON.parse(atob(token.split('.')[1]));
+          if (p.name) { instructorName = p.name; instructorInitials = p.name.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2); }
+        }
+      } catch (_) {}
+    }
+    return {
+      ...form,
+      curriculum:    sections,
+      quiz:          mediaType === "quiz" ? { ...quizSettings, questions: quizQuestions } : null,
+      assignment:    mediaType === "assignment" ? form.assignment : null,
+      mediaType,
+      status,
+      isPublished:   status === "published",
+      tags:          Array.isArray(form.skills) ? form.skills : (form.skills || "").split(",").map(s => s.trim()).filter(Boolean),
+      outcomes:      Array.isArray(form.outcomes) ? form.outcomes.filter(o => o.trim()) : [],
+      instructor:    { name: instructorName, initials: instructorInitials },
+      thumbnail:     thumbnail.link || thumbnail.preview || "",
+      promoVideoUrl: promoVideo.link || (promoVideo.preview?.startsWith("blob:") ? "" : promoVideo.preview) || "",
+    };
+  };
 
   const handleSave = async (status) => {
     const token = localStorage.getItem("admin_token");
@@ -1684,9 +1691,10 @@ export default function AdminPanel() {
     fetch("http://localhost:5000/api/auth/me", { headers:{ Authorization:`Bearer ${token}` } })
       .then(r => r.json())
       .then(d => {
-        if (d.success && d.data) {
-          const n = d.data.name || d.data.email || "Admin";
-          setAdmin({ name: n, email: d.data.email || "", initials: n.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) });
+        if (d.success && (d.admin || d.data)) {
+          const info = d.admin || d.data;
+          const n = info.name || info.email || "Admin";
+          setAdmin({ name: n, email: info.email || "", initials: n.split(" ").map(w=>w[0]).join("").toUpperCase().slice(0,2) });
         }
       }).catch(() => {});
 
@@ -1705,37 +1713,9 @@ export default function AdminPanel() {
       } catch (e) {}
     }
   };
-  const mapCourse = (c) => {
-    const instructorName = typeof c.instructor === "object" ? c.instructor?.name || "Admin" : "Admin";
-    const instructorInitials = typeof c.instructor === "object" ? c.instructor?.initials || "AD" : "AD";
-    return {
-      ...c,
-      id:         String(c._id || c.id || Date.now()),
-      cat:        c.category || c.cat || "Development",
-      instructor: instructorName,
-      initials:   instructorInitials,
-      accent:     c.accent     || "#7c2fff",
-      accentGlow: c.accentGlow || "rgba(124,47,255,.28)",
-      bg:         c.bg         || "linear-gradient(135deg,#0a0f1a,#1a0533)",
-      emoji:      c.emoji      || "📘",
-      badge:      c.badge      || "New",
-      enrolled:   c.enrolled   ?? false,
-      progress:   c.progress   ?? 0,
-      students:   c.enrolledStudents || c.students || 0,
-      rating:     c.rating     || 0,
-      revenue:    c.revenue    || "—",
-      tags:       Array.isArray(c.tags) ? c.tags : [],
-      outcomes:   Array.isArray(c.outcomes) ? c.outcomes : [],
-      level:      c.level      || "Beginner",
-      status:     c.status     || "draft",
-    };
-  };
-
   const handleSaved = (newCourse) => {
-    if (!newCourse) return;
-    // Refetch from backend to keep state in sync
+    // Refetch from backend to keep state in sync (regardless of newCourse value)
     fetchCourses();
-    // Reset filters so newly created/edited course is always visible
     setFilterKey(k => k + 1);
   };
   return (
@@ -1765,7 +1745,7 @@ export default function AdminPanel() {
       {builderOpen && (
         <>
           <canvas ref={builderBgRef} style={{ position:"fixed", inset:0, zIndex:199, pointerEvents:"none", background:"linear-gradient(135deg,#050814 0%,#0a0520 50%,#050814 100%)" }}/>
-          <CourseBuilder editCourse={editCourse} onSaved={handleSaved} onClose={() => { setBuilderOpen(false); setEditCourse(null); }} showToast={showToast}/>
+          <CourseBuilder editCourse={editCourse} admin={admin} onSaved={handleSaved} onClose={() => { setBuilderOpen(false); setEditCourse(null); }} showToast={showToast}/>
         </>
       )}
       {toast && <Toast msg={toast} onDone={() => setToast(null)}/>}

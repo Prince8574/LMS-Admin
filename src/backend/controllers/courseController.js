@@ -17,7 +17,10 @@ async function create(req, res) {
       const { ObjectId } = require("mongodb");
       const adminDoc = await getDB().collection("admins").findOne({ _id: new ObjectId(req.admin.id) });
       adminName = adminDoc?.name || adminDoc?.username || adminDoc?.email?.split("@")[0] || "Admin";
-    } catch (_) {}
+    } catch (_) {
+      // fallback: use email from token
+      adminName = req.admin.email?.split("@")[0] || "Admin";
+    }
 
     const initials = adminName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
     const instructor = req.body.instructor?.name
@@ -34,7 +37,16 @@ async function create(req, res) {
 // GET /api/courses
 async function getAll(req, res) {
   try {
-    const filter = {};
+    const { ObjectId } = require("mongodb");
+    const adminObjId = new ObjectId(req.admin.id);
+    // Show courses that belong to this admin OR have no adminId (legacy courses)
+    const filter = {
+      $or: [
+        { adminId: adminObjId },
+        { adminId: { $exists: false } },
+        { adminId: null }
+      ]
+    };
     if (req.query.category)   filter.category   = req.query.category;
     if (req.query.level)      filter.level       = req.query.level;
     if (req.query.status)     filter.status      = req.query.status;

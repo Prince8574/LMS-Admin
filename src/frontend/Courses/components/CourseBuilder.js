@@ -46,15 +46,33 @@ export function CourseBuilder({ onClose, editCourse = null, onSaved }) {
     setLoading(true);
     setError(null);
     try {
+      // Upload thumbnail first if selected
+      let thumbnailUrl = editCourse?.thumbnail || '';
+      if (thumbnail && thumbnail instanceof File) {
+        const uploadResult = await courseService.uploadThumbnail(thumbnail);
+        if (uploadResult.success && uploadResult.url) {
+          thumbnailUrl = uploadResult.url;
+        }
+      }
+
       const payload = {
         title: form.title,
+        subtitle: form.subtitle,
         description: form.description,
         category: form.category,
-        level: form.level.toLowerCase(),
+        level: form.level,
+        language: form.language,
         price: pricingModel === 'free' ? 0 : parseFloat(form.price) || 0,
         duration: form.language,
-        thumbnail: thumbnail ? thumbnail.name : '',
+        thumbnail: thumbnailUrl,
         isPublished,
+        status: isPublished ? 'published' : 'draft',
+        tags: form.skills,
+        certificate: form.certificate,
+        lifetime: form.lifetime,
+        downloadable: form.downloadable,
+        mediaType,
+        curriculum: sections,
       };
       let result;
       if (editCourse?._id) {

@@ -9,7 +9,7 @@ const USER_COL    = "users";
 
 // ─── Transactions ────────────────────────────────────────
 
-async function getAllTransactions({ status, search, page = 1, limit = 50 } = {}) {
+async function getAllTransactions({ status, search, page = 1, limit = 50, adminId } = {}) {
   const db = getDB();
   const filter = {};
   if (status && status !== "all") filter.status = status;
@@ -19,6 +19,14 @@ async function getAllTransactions({ status, search, page = 1, limit = 50 } = {})
       { courseTitle: { $regex: search, $options: "i" } },
       { txId: { $regex: search, $options: "i" } },
     ];
+  }
+  // Filter by admin's courses if adminId provided
+  if (adminId) {
+    const adminCourseIds = await db.collection(COURSE_COL)
+      .find({ adminId: new ObjectId(adminId) }, { projection: { _id: 1 } })
+      .toArray()
+      .then(cs => cs.map(c => c._id));
+    filter.courseId = { $in: adminCourseIds };
   }
   const skip  = (page - 1) * limit;
   const total = await db.collection(TX_COL).countDocuments(filter);
@@ -109,33 +117,43 @@ async function processAllPayouts() {
 
 // ─── Revenue Stats ────────────────────────────────────────
 
-async function getRevenueStats() {
+async function getRevenueStats(adminId) {
   const db = getDB();
   const col = db.collection(TX_COL);
+
+  // Get admin's course IDs for filtering
+  let courseFilter = {};
+  if (adminId) {
+    const adminCourseIds = await db.collection(COURSE_COL)
+      .find({ adminId: new ObjectId(adminId) }, { projection: { _id: 1 } })
+      .toArray()
+      .then(cs => cs.map(c => c._id));
+    courseFilter = { courseId: { $in: adminCourseIds } };
+  }
 
   const [totals, refunds, methodAgg, monthlyAgg] = await Promise.all([
     // Total revenue from successful transactions
     col.aggregate([
-      { $match: { status: "success" } },
+      { $match: { status: "success", ...courseFilter } },
       { $group: { _id: null, totalRevenue: { $sum: "$amount" }, totalFees: { $sum: "$fee" }, totalNet: { $sum: "$net" }, count: { $sum: 1 } } }
     ]).toArray(),
 
     // Refund stats
     col.aggregate([
-      { $match: { status: "refunded" } },
+      { $match: { status: "refunded", ...courseFilter } },
       { $group: { _id: null, refundAmount: { $sum: "$amount" }, refundCount: { $sum: 1 } } }
     ]).toArray(),
 
     // Payment method breakdown
     col.aggregate([
-      { $match: { status: "success" } },
+      { $match: { status: "success", ...courseFilter } },
       { $group: { _id: "$method", total: { $sum: "$amount" }, count: { $sum: 1 } } },
       { $sort: { total: -1 } }
     ]).toArray(),
 
     // Monthly revenue (last 8 months)
     col.aggregate([
-      { $match: { status: "success", createdAt: { $gte: new Date(Date.now() - 240 * 24 * 60 * 60 * 1000) } } },
+      { $match: { status: "success", createdAt: { $gte: new Date(Date.now() - 240 * 24 * 60 * 60 * 1000) }, ...courseFilter } },
       { $group: {
         _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
         revenue: { $sum: "$amount" },

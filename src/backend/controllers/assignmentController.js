@@ -10,7 +10,7 @@ const usersCol = () => getDB().collection("users");
 exports.getAll = async (req, res) => {
   try {
     const { page = 1, limit = 20, search, type, priority } = req.query;
-    const q = { isActive: { $ne: false } };
+    const q = { isActive: { $ne: false }, createdBy: req.admin?.id || null };
     if (search)   q.$or = [{ title: new RegExp(search, "i") }, { courseName: new RegExp(search, "i") }];
     if (type)     q.type = type;
     if (priority) q.priority = priority;

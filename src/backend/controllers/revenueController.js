@@ -3,7 +3,8 @@ const Revenue = require("../models/Revenue");
 // GET /api/revenue/stats
 async function getStats(req, res) {
   try {
-    const stats = await Revenue.getRevenueStats();
+    const adminId = req.admin?.id;
+    const stats = await Revenue.getRevenueStats(adminId);
     res.json({ success: true, data: stats });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -14,7 +15,8 @@ async function getStats(req, res) {
 async function getTransactions(req, res) {
   try {
     const { status, search, page = 1, limit = 50 } = req.query;
-    const result = await Revenue.getAllTransactions({ status, search, page: parseInt(page), limit: parseInt(limit) });
+    const adminId = req.admin?.id;
+    const result = await Revenue.getAllTransactions({ status, search, page: parseInt(page), limit: parseInt(limit), adminId });
     res.json({ success: true, ...result });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

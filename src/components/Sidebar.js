@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../frontend/Auth/services/authService';
 
@@ -41,16 +42,28 @@ export function Sidebar() {
     navigate('/auth', { replace: true });
   };
 
-  // Read admin info from token
+  // Read admin info from token or API
   const token = localStorage.getItem('admin_token');
-  let adminName = 'Super Admin';
-  let adminEmail = 'admin@learnverse.io';
-  try {
-    if (token) {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.email) adminEmail = payload.email;
-    }
-  } catch (_) {}
+  const [adminName, setAdminName] = useState('Super Admin');
+  const [adminEmail, setAdminEmail] = useState('admin@learnverse.io');
+
+  useEffect(() => {
+    // Try token first
+    try {
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.email) setAdminEmail(payload.email);
+        if (payload.name) { setAdminName(payload.name); return; }
+      }
+    } catch (_) {}
+    // Fallback: fetch from API
+    authService.getMe().then(data => {
+      if (data.success && data.admin) {
+        if (data.admin.name) setAdminName(data.admin.name);
+        if (data.admin.email) setAdminEmail(data.admin.email);
+      }
+    }).catch(() => {});
+  }, [token]);
 
   const initials = adminName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
