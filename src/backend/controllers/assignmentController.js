@@ -178,10 +178,12 @@ exports.gradeSubmission = async (req, res) => {
 
     // Generate certificate
     const certificateId = generateCertificateId();
+    const certCourseName = submission.courseName || assignment?.courseName || assignment?.course || '';
+    const certAssignTitle = submission.assignmentTitle || assignment?.title || 'Assignment';
     const certificatePath = await generateCertificate({
       studentName: student.name,
-      courseName: submission.courseName || assignment?.courseName || '',
-      assignmentTitle: submission.assignmentTitle || assignment?.title || 'Assignment',
+      courseName: certCourseName,
+      assignmentTitle: certAssignTitle,
       score: Number(score),
       maxScore: finalMaxScore,
       completionDate: new Date(),
@@ -214,7 +216,7 @@ exports.gradeSubmission = async (req, res) => {
           grades: {
             assignmentId:    submission.assignment || submission.assignmentId,
             assignmentTitle: submission.assignmentTitle || assignment?.title || '',
-            courseName:      submission.courseName || assignment?.courseName || '',
+            courseName:      submission.courseName || assignment?.courseName || assignment?.course || '',
             score:           Number(score),
             maxScore:        finalMaxScore,
             percentage:      ((Number(score) / finalMaxScore) * 100).toFixed(2),

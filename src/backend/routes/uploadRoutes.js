@@ -27,7 +27,7 @@ const fileFilter = (req, file, cb) => {
   allowed.includes(file.mimetype) ? cb(null, true) : cb(new Error("Only images allowed"), false);
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
 
 // POST /api/upload/thumbnail
 router.post("/thumbnail", protect, upload.single("thumbnail"), (req, res) => {
@@ -38,8 +38,9 @@ router.post("/thumbnail", protect, upload.single("thumbnail"), (req, res) => {
     const src  = path.join(uploadDir, req.file.filename);
     const dest = path.join(studentUploadDir, req.file.filename);
     fs.copyFileSync(src, dest);
+    console.log(`[Upload] Copied to student uploads: ${req.file.filename}`);
   } catch (e) {
-    console.warn("Could not copy to student uploads:", e.message);
+    console.error("Could not copy to student uploads:", e.message);
   }
 
   const url = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;

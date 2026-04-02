@@ -1326,11 +1326,10 @@ export default function AssignmentsPage() {
           {/* ── ASSIGNMENTS TAB ── */}
           {activeTab==="assignments"&&<>
           {/* Stats */}
-          <div ref={statsRef} style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12,marginBottom:20}}>
+          <div ref={statsRef} style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12,marginBottom:20}}>
             <StatCard icon="📋" label="Total"    value={total}   sub="All assignments"    grad={G.em}   idx={0}/>
-            <StatCard icon="🔴" label="High Pri" value={highPri} sub="Need attention"     grad={G.pink} idx={1}/>
-            <StatCard icon="⏰" label="Overdue"  value={overdue} sub="Past due date"      grad={G.gold} idx={2}/>
-            <StatCard icon="📚" label="Courses"  value={courses} sub="Active courses"     grad={G.teal} idx={3}/>
+            <StatCard icon="⏰" label="Overdue"  value={overdue} sub="Past due date"      grad={G.gold} idx={1}/>
+            <StatCard icon="📚" label="Courses"  value={courses} sub="Active courses"     grad={G.teal} idx={2}/>
           </div>
 
           {/* Filters */}

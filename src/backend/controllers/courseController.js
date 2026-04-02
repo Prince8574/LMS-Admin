@@ -9,7 +9,22 @@ async function create(req, res) {
     const { title, category } = req.body;
     if (!title || !category)
       return res.status(400).json({ success: false, message: "Title and category are required" });
-    const course = await createCourse({ ...req.body, adminId: req.admin.id });
+
+    // Fetch admin name from DB
+    let adminName = "Admin";
+    try {
+      const { getDB } = require("../config/db");
+      const { ObjectId } = require("mongodb");
+      const adminDoc = await getDB().collection("admins").findOne({ _id: new ObjectId(req.admin.id) });
+      adminName = adminDoc?.name || adminDoc?.username || adminDoc?.email?.split("@")[0] || "Admin";
+    } catch (_) {}
+
+    const initials = adminName.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+    const instructor = req.body.instructor?.name
+      ? req.body.instructor
+      : { id: req.admin.id, name: adminName, initials };
+
+    const course = await createCourse({ ...req.body, instructor, adminId: req.admin.id });
     res.status(201).json({ success: true, data: course });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
