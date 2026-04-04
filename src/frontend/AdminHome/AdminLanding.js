@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { C, GR, FEATURES, STATS, TESTIMONIALS } from "./constants";
 import { AnimatedAvatarSmall } from "../../components/AnimatedAvatarSmall";
 import "./AdminLanding.css";
+import { createSafeRenderer } from "../../utils/safeWebGL";
 
 /* ════════════════════════════
 THREE.JS — Enhanced Quantum Nebula Scene
@@ -12,7 +13,8 @@ THREE.JS — Enhanced Quantum Nebula Scene
 function useBg(ref) {
   useEffect(() => {
     if (!ref.current) return;
-    const R = new THREE.WebGLRenderer({ canvas: ref.current, alpha: true, antialias: true });
+    const R = createSafeRenderer(THREE, ref.current);
+    if (!R) return;
     R.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     R.setSize(window.innerWidth, window.innerHeight);
     const S = new THREE.Scene();

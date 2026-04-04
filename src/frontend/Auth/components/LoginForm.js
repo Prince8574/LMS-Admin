@@ -104,12 +104,10 @@ export function LoginForm({ onSuccess, switchToRegister, switchToForgot }) {
       {step===1 && (
         <>
           <div className="social-row" style={{animation:"fadeUp .4s .25s ease both",opacity:0}}>
-            <button className="social-btn" onClick={() => {}}>
+            <button className="social-btn" onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'} style={{width:"100%",justifyContent:"center"}}>
               <div className="social-icon" style={{background:"rgba(219,68,55,.15)",color:"#EA4335",fontWeight:700,fontSize:".85rem"}}>G</div>Google
             </button>
-            <button className="social-btn" onClick={() => {}}>
-              <div className="social-icon" style={{background:"rgba(10,102,194,.15)",color:"#0A66C2",fontWeight:700,fontSize:".75rem"}}>in</div>LinkedIn
-            </button>
+
           </div>
           <div className="or-divider" style={{animation:"fadeUp .4s .28s ease both",opacity:0}}>
             <div className="or-line"/><div className="or-text">OR CONTINUE WITH EMAIL</div><div className="or-line"/>

@@ -14,109 +14,79 @@ function getTokenData() {
   } catch { return {}; }
 }
 
-// Animated avatar wrapper with Three.js canvas bg + GSAP pulse ring
+// Animated avatar wrapper with CSS particle ring + GSAP pulse
 function AnimatedAvatar({ avatarUrl, initials, onClick }) {
-  const canvasRef = useRef(null);
   const ringRef = useRef(null);
+  const ring2Ref = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let af, renderer, scene, camera;
-    try {
-      const THREE = require('three');
-      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(96, 96);
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-      camera.position.z = 3.5;
-
-      // Particles
-      const geo = new THREE.BufferGeometry();
-      const count = 120;
-      const pos = new Float32Array(count * 3);
-      for (let i = 0; i < count; i++) {
-        const r = 1.4 + Math.random() * 0.6;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.random() * Math.PI;
-        pos[i*3]   = r * Math.sin(phi) * Math.cos(theta);
-        pos[i*3+1] = r * Math.sin(phi) * Math.sin(theta);
-        pos[i*3+2] = r * Math.cos(phi);
-      }
-      geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-      const mat = new THREE.PointsMaterial({ color: 0x9d7fff, size: 0.045, transparent: true, opacity: 0.7 });
-      const points = new THREE.Points(geo, mat);
-      scene.add(points);
-
-      // Wireframe ring
-      const ringGeo = new THREE.TorusGeometry(1.55, 0.012, 6, 80);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x7c2fff, transparent: true, opacity: 0.35, wireframe: true });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = 0.5;
-      scene.add(ring);
-
-      let t = 0;
-      function animate() {
-        af = requestAnimationFrame(animate);
-        t += 0.012;
-        points.rotation.y = t * 0.4;
-        points.rotation.x = t * 0.15;
-        ring.rotation.z = t * 0.3;
-        ring.rotation.y = t * 0.2;
-        renderer.render(scene, camera);
-      }
-      animate();
-    } catch (e) { /* Three.js not available */ }
-
-    // GSAP pulse ring
-    let gsapInterval;
     try {
       const { gsap } = require('gsap');
       if (ringRef.current) {
-        gsap.to(ringRef.current, { scale: 1.12, opacity: 0.5, duration: 1.2, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+        gsap.to(ringRef.current, { scale: 1.15, opacity: 0.9, duration: 1.4, repeat: -1, yoyo: true, ease: 'sine.inOut' });
       }
-    } catch (e) {
-      // CSS fallback
-      gsapInterval = setInterval(() => {}, 9999);
-    }
-
-    return () => {
-      cancelAnimationFrame(af);
-      if (renderer) renderer.dispose();
-      clearInterval(gsapInterval);
-    };
+      if (ring2Ref.current) {
+        gsap.to(ring2Ref.current, { scale: 1.28, opacity: 0, duration: 2, repeat: -1, ease: 'power2.out', delay: 0.5 });
+      }
+    } catch (_) {}
   }, []);
+
+  const SIZE = 96;
+  const dots = Array.from({ length: 10 }, (_, i) => {
+    const angle = (i / 10) * 360;
+    const r = SIZE * 0.62;
+    const x = Math.cos((angle * Math.PI) / 180) * r;
+    const y = Math.sin((angle * Math.PI) / 180) * r;
+    return { x, y, delay: i * 0.15 };
+  });
 
   return (
     <div
       onClick={onClick}
       title="Click to change photo"
-      style={{ position: 'relative', width: 96, height: 96, cursor: 'pointer', flexShrink: 0 }}
+      style={{ position: 'relative', width: SIZE, height: SIZE, cursor: 'pointer', flexShrink: 0 }}
     >
-      {/* Three.js canvas background */}
-      <canvas ref={canvasRef} width={96} height={96} style={{ position: 'absolute', inset: 0, borderRadius: '50%', zIndex: 0 }} />
+      {/* Orbiting dots */}
+      {dots.map((d, i) => (
+        <div key={i} style={{
+          position: 'absolute',
+          width: 5, height: 5,
+          borderRadius: '50%',
+          background: 'rgba(167,139,250,0.75)',
+          top: '50%', left: '50%',
+          transform: `translate(calc(-50% + ${d.x}px), calc(-50% + ${d.y}px))`,
+          animation: `avatarDot 2.2s ease-in-out ${d.delay}s infinite`,
+          zIndex: 0,
+        }} />
+      ))}
 
-      {/* GSAP pulse ring */}
+      {/* Outer ripple ring */}
+      <div ref={ring2Ref} style={{
+        position: 'absolute', inset: -6, borderRadius: '50%',
+        border: '1px solid rgba(124,47,255,.4)',
+        zIndex: 1, pointerEvents: 'none',
+        transformOrigin: 'center',
+        animation: 'avatarRipple 2s ease-out infinite',
+      }} />
+
+      {/* Pulse ring */}
       <div ref={ringRef} style={{
-        position: 'absolute', inset: -4,
-        borderRadius: '50%',
-        border: '2px solid rgba(124,47,255,.5)',
-        zIndex: 1,
-        pointerEvents: 'none',
+        position: 'absolute', inset: -3, borderRadius: '50%',
+        border: '2px solid rgba(124,47,255,.65)',
+        zIndex: 1, pointerEvents: 'none',
+        transformOrigin: 'center',
         animation: 'avatarPulse 1.8s ease-in-out infinite',
       }} />
 
-      {/* Avatar image or initials */}
+      {/* Avatar */}
       <div style={{
-        position: 'absolute', inset: 0,
-        borderRadius: '50%',
+        position: 'absolute', inset: 0, borderRadius: '50%',
         background: 'linear-gradient(135deg,#7c2fff,#8b5cf6)',
         display: 'grid', placeItems: 'center',
         overflow: 'hidden', zIndex: 2,
         fontSize: '.9rem', fontWeight: 900, color: '#fff',
         border: '2px solid rgba(124,47,255,.6)',
-        boxShadow: '0 0 18px rgba(124,47,255,.4)',
+        boxShadow: '0 0 20px rgba(124,47,255,.45)',
       }}>
         {avatarUrl
           ? <img src={avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -136,7 +106,11 @@ function AnimatedAvatar({ avatarUrl, initials, onClick }) {
         onMouseLeave={e => e.currentTarget.style.opacity = '0'}
       >CHANGE</div>
 
-      <style>{`@keyframes avatarPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:.9} }`}</style>
+      <style>{`
+        @keyframes avatarPulse { 0%,100%{transform:scale(1);opacity:.5} 50%{transform:scale(1.1);opacity:1} }
+        @keyframes avatarRipple { 0%{transform:scale(1);opacity:.5} 100%{transform:scale(1.4);opacity:0} }
+        @keyframes avatarDot { 0%,100%{opacity:.2;transform:translate(calc(-50% + var(--x,0px)),calc(-50% + var(--y,0px))) scale(.7)} 50%{opacity:.85;transform:translate(calc(-50% + var(--x,0px)),calc(-50% + var(--y,0px))) scale(1.3)} }
+      `}</style>
     </div>
   );
 }

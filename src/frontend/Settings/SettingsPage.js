@@ -187,23 +187,8 @@ export default function SettingsPage() {
       {/* Toast */}
       {toast && (
         <div className="toast">
-          <div style={{
-            width: 26,
-            height: 26,
-            borderRadius: 8,
-            background: 'rgba(0,217,126,.15)',
-            border: '1px solid rgba(0,217,126,.3)',
-            display: 'grid',
-            placeItems: 'center',
-            fontSize: '.82rem',
-            flexShrink: 0
-          }}>
-            ✓
-          </div>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: '.84rem', marginBottom: 1 }}>Saved</div>
-            <div style={{ fontSize: '.76rem', color: C.t2 }}>{toast}</div>
-          </div>
+          <span style={{ fontSize: '.9rem', flexShrink: 0 }}>✓</span>
+          <span style={{ fontSize: '.78rem', color: '#e2e8f0' }}>{toast}</span>
         </div>
       )}
     </div>

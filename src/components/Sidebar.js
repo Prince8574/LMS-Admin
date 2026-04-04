@@ -16,8 +16,8 @@ const SB_ITEMS = [
   { id: 'courses',     ico: '📚',  l: 'Courses',      badge: 84,    bc: C.em,      path: '/courses' },
   { id: 'students',    ico: '👥',  l: 'Students',     badge: '52K', bc: '#8b5cf6', path: '/students' },
   { id: 'revenue',     ico: '💰',  l: 'Revenue',      path: '/revenue' },
-  { id: 'analytics',   ico: '📊',  l: 'Analytics',    path: '/analytics' },
-  { id: 'assignments', ico: '📝',   l: 'Assignments',  path: '/assignments' },  { id: 'settings',    ico: '⚙',   l: 'Settings',     path: '/settings' },
+  { id: 'assignments', ico: '📝',  l: 'Assignments',  path: '/assignments' },
+  { id: 'settings',    ico: '⚙',  l: 'Settings',     path: '/settings' },
 ];
 
 export function Sidebar() {
@@ -30,7 +30,6 @@ export function Sidebar() {
     if (path.startsWith('/courses'))     return 'courses';
     if (path.startsWith('/students'))    return 'students';
     if (path.startsWith('/revenue'))     return 'revenue';
-    if (path.startsWith('/analytics'))   return 'analytics';
     if (path.startsWith('/assignments')) return 'assignments';
     if (path.startsWith('/settings'))    return 'settings';
     return 'dashboard';

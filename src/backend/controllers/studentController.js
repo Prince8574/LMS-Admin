@@ -68,12 +68,15 @@ async function update(req, res) {
 // PATCH /api/students/:id/status
 async function setStatus(req, res) {
   try {
-    const { status } = req.body;
+    const { status, suspendReason } = req.body;
     const allowed = ["active", "inactive", "suspended"];
     if (!allowed.includes(status)) {
       return res.status(400).json({ success: false, message: `Status must be one of: ${allowed.join(", ")}` });
     }
-    const student = await Student.setStudentStatus(req.params.id, status);
+    const updates = { status };
+    if (status === "suspended" && suspendReason) updates.suspendReason = suspendReason;
+    if (status === "active") updates.suspendReason = null;
+    const student = await Student.updateStudent(req.params.id, updates);
     if (!student) return res.status(404).json({ success: false, message: "Student not found" });
     res.json({ success: true, data: student });
   } catch (err) {
@@ -137,4 +140,53 @@ async function bulkAction(req, res) {
   }
 }
 
-module.exports = { getAll, getStats, getOne, create, update, setStatus, setPlan, remove, bulkAction };
+// GET /api/students/:id/export — full student data with enrollments & courses
+async function exportStudent(req, res) {
+  try {
+    const { getDB } = require("../config/db");
+    const { ObjectId } = require("mongodb");
+    const db = getDB();
+
+    const student = await Student.getStudentById(req.params.id);
+    if (!student) return res.status(404).json({ success: false, message: "Student not found" });
+
+    // Get enrollments with course details
+    const enrollments = await db.collection("enrollments").find({
+      $or: [{ user: student._id }, { user: student._id.toString() }]
+    }).toArray();
+
+    // Fetch course details for each enrollment
+    const enrollmentsWithCourses = await Promise.all(enrollments.map(async (e) => {
+      let course = null;
+      try {
+        const courseId = e.course || e.courseId;
+        if (courseId) {
+          course = await db.collection("courses").findOne(
+            { _id: typeof courseId === "string" ? new ObjectId(courseId) : courseId },
+            { projection: { title: 1, category: 1, price: 1, instructor: 1 } }
+          );
+        }
+      } catch (_) {}
+      return { ...e, courseDetails: course };
+    }));
+
+    // Get submissions/grades
+    const submissions = await db.collection("submissions").find({
+      $or: [{ student: student._id }, { student: student._id.toString() }]
+    }).toArray();
+
+    res.json({
+      success: true,
+      data: {
+        student,
+        enrollments: enrollmentsWithCourses,
+        submissions,
+        exportedAt: new Date(),
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+module.exports = { getAll, getStats, getOne, create, update, setStatus, setPlan, remove, bulkAction, exportStudent };

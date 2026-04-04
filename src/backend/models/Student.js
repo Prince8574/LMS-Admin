@@ -34,10 +34,46 @@ async function getAllStudents({ search, status, plan, sortBy = "createdAt", page
     .sort(sortMap[sortBy] || { createdAt: -1 })
     .skip(skip)
     .limit(limit)
-    .project({ password: 0 }) // never return password
+    .project({ password: 0 })
     .toArray();
 
-  return { students, total, page, pages: Math.ceil(total / limit) };
+  // Enrich each student with computed fields from enrollments
+  const enriched = await Promise.all(students.map(async (s) => {
+    const enrollments = await db.collection("enrollments").find({
+      $or: [
+        { user: s._id },
+        { user: s._id.toString() },
+        { student: s._id },
+        { student: s._id.toString() },
+      ]
+    }).toArray();
+
+    const enrolledCount = enrollments.length || (s.enrolledCourses?.length) || 0;
+    const completedCount = enrollments.filter(e => e.progress >= 100).length || (s.completedCourses?.length) || 0;
+    const avgProgress = enrollments.length > 0
+      ? Math.round(enrollments.reduce((sum, e) => sum + (e.progress || 0), 0) / enrollments.length)
+      : (s.avgProgress || 0);
+    const totalSpent = enrollments.reduce((sum, e) => sum + (e.payment?.amount || e.amountPaid || 0), 0) || s.totalSpent || 0;
+    const hasPaid = enrollments.some(e => e.payment?.status === "paid" && e.payment?.amount > 0);
+    const lastEnrollDate = enrollments.reduce((latest, e) => {
+      const d = e.enrolledAt || e.updatedAt;
+      return d && (!latest || new Date(d) > new Date(latest)) ? d : latest;
+    }, null);
+
+    return {
+      ...s,
+      plan: s.plan === "premium" ? "premium" : (hasPaid ? "premium" : "free"),
+      status: s.status || "inactive",
+      enrolledCourses: s.enrolledCourses || [],
+      enrolledCount,
+      completedCount,
+      avgProgress,
+      totalSpent,
+      lastActive: s.lastActive || lastEnrollDate || s.updatedAt || s.createdAt || null,
+    };
+  }));
+
+  return { students: enriched, total, page, pages: Math.ceil(total / limit) };
 }
 
 // Get single student by ID
@@ -114,24 +150,26 @@ async function getStudentStats() {
   const db = getDB();
   const col = db.collection(COLLECTION);
 
-  const [total, activeToday, premium] = await Promise.all([
+  const [total, premium] = await Promise.all([
     col.countDocuments({ role: "student" }),
-    col.countDocuments({
-      role: "student",
-      lastActive: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    }),
     col.countDocuments({ role: "student", plan: "premium" }),
   ]);
 
-  // Avg progress across all students
-  const aggResult = await col
-    .aggregate([
-      { $match: { role: "student" } },
-      { $group: { _id: null, avgProgress: { $avg: "$avgProgress" }, totalRevenue: { $sum: "$totalSpent" } } },
-    ])
-    .toArray();
+  // Active today — use updatedAt or lastActive
+  const activeToday = await col.countDocuments({
+    role: "student",
+    $or: [
+      { lastActive: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
+      { updatedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } },
+    ]
+  });
 
-  const agg = aggResult[0] || { avgProgress: 0, totalRevenue: 0 };
+  // Avg progress from enrollments
+  const enrollAgg = await db.collection("enrollments").aggregate([
+    { $group: { _id: null, avgProgress: { $avg: "$progress" }, totalRevenue: { $sum: "$amountPaid" } } }
+  ]).toArray();
+
+  const agg = enrollAgg[0] || { avgProgress: 0, totalRevenue: 0 };
 
   return {
     total,

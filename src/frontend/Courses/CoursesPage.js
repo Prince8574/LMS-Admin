@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "../../components/Sidebar";
 import * as THREE from "three";
+import { createSafeRenderer } from "../../utils/safeWebGL";
 
 const G = {
   purple:"linear-gradient(135deg,#7c2fff,#8b5cf6)",
@@ -18,7 +19,8 @@ function useBg(ref) {
     let R;
     function init() {
       if (!ref.current) return;
-      R = new THREE.WebGLRenderer({ canvas: ref.current, alpha: true, antialias: true });
+      R = createSafeRenderer(THREE, ref.current);
+      if (!R) return;
       R.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       R.setSize(window.innerWidth, window.innerHeight);
       const S = new THREE.Scene();
@@ -110,7 +112,7 @@ body{background:#050814;color:#ede8ff;font-family:'Satoshi',sans-serif;overflow:
 @keyframes starPop{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
 @keyframes dotBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.6)}}
 @keyframes prog{from{width:0}to{width:var(--pw,0%)}}
-@keyframes toast{0%{opacity:0;transform:translateY(14px) scale(.92)}12%,84%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-7px) scale(.95)}}
+@keyframes toast{0%{opacity:0;transform:translateX(20px)}8%,84%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(20px)}}
 @keyframes barGrow{from{height:0}to{height:var(--bh)}}
 @keyframes slideR{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
 @keyframes lineIn{from{stroke-dashoffset:var(--tl,400)}to{stroke-dashoffset:0}}
@@ -204,7 +206,7 @@ body{background:#050814;color:#ede8ff;font-family:'Satoshi',sans-serif;overflow:
 .pricing-toggle{display:flex;padding:4px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);margin-bottom:18px}
 .pricing-opt{flex:1;padding:9px;border-radius:10px;text-align:center;cursor:pointer;font-size:.8rem;font-weight:600;color:#4d7a9e;transition:all .22s;border:1px solid transparent}
 .pricing-opt.active{background:linear-gradient(135deg,rgba(124,47,255,.2),rgba(139,92,246,.1));color:#ede8ff;border-color:rgba(124,47,255,.32);box-shadow:0 2px 14px rgba(124,47,255,.22)}
-.toast-el{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:11px;padding:12px 18px;border-radius:13px;background:rgba(5,8,20,.99);border:1px solid rgba(124,47,255,.25);box-shadow:0 18px 44px rgba(0,0,0,.62);animation:toast 3.4s ease forwards;font-size:.82rem}
+.toast-el{position:fixed;top:18px;right:18px;z-index:9999;display:flex;align-items:center;gap:8px;padding:9px 14px;border-radius:10px;background:rgba(5,8,20,.97);border:1px solid rgba(124,47,255,.3);box-shadow:0 4px 20px rgba(0,0,0,.5);animation:toast 3.4s ease forwards;font-size:.78rem;max-width:220px}
 .divider{height:1px;background:rgba(255,255,255,.055)}
 .step-prog{width:18px;height:3px;border-radius:99px;transition:all .3s}
 .dash-card{background:rgba(5,8,20,.97);border:1px solid rgba(255,255,255,.06);border-radius:15px;padding:18px;overflow:hidden;position:relative}

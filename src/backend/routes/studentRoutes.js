@@ -11,6 +11,7 @@ const {
   setPlan,
   remove,
   bulkAction,
+  exportStudent,
 } = require("../controllers/studentController");
 
 // All student routes require admin login
@@ -32,5 +33,8 @@ router.delete("/:id", remove);
 // Status & plan toggles
 router.patch("/:id/status", setStatus);
 router.patch("/:id/plan",   setPlan);
+
+// Export
+router.get("/:id/export", exportStudent);
 
 module.exports = router;

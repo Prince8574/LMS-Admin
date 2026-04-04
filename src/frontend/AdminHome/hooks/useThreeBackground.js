@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import * as THREE from 'three';
+import { createSafeRenderer } from '../../../utils/safeWebGL';
 
 export function useThreeBackground(ref) {
   useEffect(() => {
     if (!ref.current) return;
     
-    const R = new THREE.WebGLRenderer({ canvas: ref.current, alpha: true, antialias: true });
+    const R = createSafeRenderer(THREE, ref.current);
+    if (!R) return;
     R.setPixelRatio(Math.min(devicePixelRatio, 2));
     R.setSize(innerWidth, innerHeight);
     const S = new THREE.Scene();

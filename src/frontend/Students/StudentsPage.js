@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '../../components/Sidebar';
 import { StudentDrawer } from './components/StudentDrawer';
 import { AddStudentForm } from './components/AddStudentForm';
@@ -30,6 +31,7 @@ function initials(name = "") {
 }
 
 export default function StudentsPage() {
+  const navigate = useNavigate();
   const [students, setStudents]     = useState([]);
   const [stats, setStats]           = useState(null);
   const [loading, setLoading]       = useState(true);
@@ -116,11 +118,11 @@ export default function StudentsPage() {
 
   // ── Stats band data ─────────────────────────────────────
   const STATS = [
-    { l: 'Total Students',    v: stats ? stats.total.toLocaleString()       : '—', c: C.cy, g: GR.cy, ico: '👥' },
-    { l: 'Active Today',      v: stats ? stats.activeToday.toLocaleString() : '—', c: C.em, g: GR.em, ico: '⚡' },
-    { l: 'Premium Users',     v: stats ? stats.premium.toLocaleString()     : '—', c: C.am, g: GR.am, ico: '💎' },
+    { l: 'Total Students',    v: stats ? stats.total.toLocaleString()       : '—', c: C.cy, g: GR.cy, ico: '👥', onClick: () => { setStatus('all'); setPlan('all'); } },
+    { l: 'Active Today',      v: stats ? stats.activeToday.toLocaleString() : '—', c: C.em, g: GR.em, ico: '⚡', onClick: () => { setStatus('active'); setPlan('all'); } },
+    { l: 'Premium Users',     v: stats ? stats.premium.toLocaleString()     : '—', c: C.am, g: GR.am, ico: '💎', onClick: () => { setStatus('all'); setPlan('premium'); } },
     { l: 'Avg Progress',      v: stats ? stats.avgProgress + '%'            : '—', c: C.vt, g: GR.vt, ico: '📈' },
-    { l: 'Total Revenue',     v: stats ? '₹' + (stats.totalRevenue || 0).toLocaleString() : '—', c: C.ro, g: GR.ro, ico: '💰' },
+    { l: 'Total Revenue',     v: stats ? '₹' + (stats.totalRevenue || 0).toLocaleString() : '—', c: C.ro, g: GR.ro, ico: '💰', onClick: () => navigate('/revenue') },
   ];
 
   return (
@@ -171,11 +173,11 @@ export default function StudentsPage() {
           </button>
         </div>
 
-        <div style={{ padding: '24px 32px', position: 'relative', zIndex: 1 }}>
+        <div style={{ padding: '24px 24px', position: 'relative', zIndex: 1 }}>
           {/* Stats band */}
           <div className="stats-band">
             {STATS.map((s, i) => (
-              <div key={i} className="stat-mini" style={{ '--g': s.g, animationDelay: `${i * .08}s` }}>
+              <div key={i} className="stat-mini" style={{ '--g': s.g, animationDelay: `${i * .08}s`, cursor: 'pointer' }} onClick={s.onClick}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.c}14`, border: `1px solid ${s.c}20`, display: 'grid', placeItems: 'center', fontSize: '.95rem' }}>{s.ico}</div>
                 </div>
@@ -232,7 +234,12 @@ export default function StudentsPage() {
                     const sm = STATUS_MAP[s.status] || STATUS_MAP.inactive;
                     const isSelected = selected.has(s._id);
                     const colIdx = i % AVATAR_COLORS.length;
-                    const lastActive = s.lastActive ? new Date(s.lastActive).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '—';
+                    const lastActive = s.lastActive
+                      ? new Date(s.lastActive).toLocaleString('en-IN', {
+                          day: 'numeric', month: 'short', year: '2-digit',
+                          hour: '2-digit', minute: '2-digit', hour12: true
+                        })
+                      : '—';
 
                     return (
                       <tr
@@ -246,8 +253,11 @@ export default function StudentsPage() {
                         </td>
                         <td className="s-td">
                           <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
-                            <div style={{ width: 38, height: 38, borderRadius: 11, background: AVATAR_COLORS[colIdx], display: 'grid', placeItems: 'center', fontFamily: 'Clash Display,sans-serif', fontSize: '.8rem', fontWeight: 900, color: '#050814' }}>
-                              {initials(s.name)}
+                            <div style={{ width: 38, height: 38, borderRadius: 11, background: AVATAR_COLORS[colIdx], display: 'grid', placeItems: 'center', fontFamily: 'Clash Display,sans-serif', fontSize: '.8rem', fontWeight: 900, color: '#050814', overflow: 'hidden', flexShrink: 0 }}>
+                              {s.avatar && s.avatar !== 'default-avatar.png'
+                                ? <img src={s.avatar} alt={s.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; }}/>
+                                : initials(s.name)
+                              }
                             </div>
                             <div>
                               <div style={{ fontWeight: 600, fontSize: '.85rem' }}>{s.name}</div>
@@ -265,7 +275,7 @@ export default function StudentsPage() {
                         </td>
                         <td className="s-td">
                           <div style={{ fontFamily: 'DM Mono,monospace', fontSize: '.82rem', fontWeight: 700 }}>
-                            {(s.enrolledCourses || []).length}
+                            {s.enrolledCount ?? (s.enrolledCourses || []).length}
                           </div>
                         </td>
                         <td className="s-td">
@@ -279,8 +289,8 @@ export default function StudentsPage() {
                         <td className="s-td" style={{ fontFamily: 'DM Mono,monospace', fontSize: '.78rem', color: C.am, fontWeight: 700 }}>
                           ₹{(s.totalSpent || 0).toLocaleString()}
                         </td>
-                        <td className="s-td" style={{ fontFamily: 'DM Mono,monospace', fontSize: '.72rem', color: C.t2 }}>
-                          {lastActive}
+                        <td className="s-td" style={{ fontFamily: 'DM Mono,monospace', fontSize: '.68rem', color: C.t2 }}>
+                          <div>{lastActive}</div>
                         </td>
                       </tr>
                     );
@@ -362,11 +372,8 @@ export default function StudentsPage() {
       {/* TOAST */}
       {toast && (
         <div className="toast">
-          <div style={{ width: 26, height: 26, borderRadius: 8, background: 'rgba(124,47,255,.15)', border: '1px solid rgba(124,47,255,.3)', display: 'grid', placeItems: 'center', fontSize: '.82rem' }}>✓</div>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: '.84rem' }}>Done</div>
-            <div style={{ fontSize: '.76rem', color: C.t2 }}>{toast}</div>
-          </div>
+          <div style={{ width: 26, height: 26, borderRadius: 8, background: 'rgba(0,217,126,.15)', border: '1px solid rgba(0,217,126,.3)', display: 'grid', placeItems: 'center', fontSize: '.82rem', flexShrink: 0 }}>✓</div>
+          <div style={{ fontSize: '.84rem', color: '#e2e8f0' }}>{toast}</div>
         </div>
       )}
     </div>

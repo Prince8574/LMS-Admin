@@ -1,6 +1,7 @@
 require("dotenv").config();
-const express = require("express");
-const cors    = require("cors");
+const express  = require("express");
+const cors     = require("cors");
+const passport = require("passport");
 const { connectDB, dbStatus } = require("./config/db");
 const authRoutes        = require("./routes/authRoutes");
 const settingsRoutes    = require("./routes/settingsRoutes");
@@ -25,6 +26,7 @@ app.use("/certificates", require("express").static(require("path").join(__dirnam
 
 // Routes
 app.use("/api/auth",         authRoutes);
+app.use("/api/auth/google",  require("./routes/googleAuth"));
 app.use("/api/student/auth", studentAuthRoutes);
 app.use("/api/settings",     settingsRoutes);
 app.use("/api/courses",      courseRoutes);

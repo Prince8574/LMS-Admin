@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import * as THREE from 'three';
 import { Sidebar } from '../../components/Sidebar';
 import { Count, RevenueLineChart, BarChartComp, DonutChartComp } from './components/Charts';
@@ -9,12 +10,14 @@ import {
   TRANSACTIONS, PAYOUTS, COURSES_REV, PAYMENT_METHODS, STATUS_MAP
 } from './constants';
 import './Revenue.css';
+import { createSafeRenderer } from '../../utils/safeWebGL';
 
 /* ─── Three.js BG ─── */
 function useBg(ref) {
   useEffect(() => {
     if (!ref.current) return;
-    const R = new THREE.WebGLRenderer({ canvas: ref.current, alpha: true, antialias: true });
+    const R = createSafeRenderer(THREE, ref.current);
+    if (!R) return;
     R.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     R.setSize(window.innerWidth, window.innerHeight);
     const S = new THREE.Scene();
@@ -105,7 +108,11 @@ export default function RevenuePage() {
   useBg(bgRef);
   const gsap = useGSAP();
 
-  const [tab, setTab]               = useState('overview');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const validTabs = ['overview', 'transactions', 'payouts', 'courses', 'analytics'];
+  const tabParam = searchParams.get('tab');
+  const tab = validTabs.includes(tabParam) ? tabParam : 'overview';
+  const setTab = (t) => setSearchParams({ tab: t }, { replace: true });
   const [txDrawer, setTxDrawer]     = useState(null);
   const [toast, setToast]           = useState(null);
   const [period, setPeriod]         = useState('Month');

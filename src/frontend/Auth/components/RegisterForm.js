@@ -144,11 +144,8 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
           <Field label="Phone (Optional)" icon="📱" placeholder="+91 98765 43210"
             value={phone} onChange={setPhone}/>
           <div style={{display:"flex",gap:10,marginBottom:20}}>
-            <button className="social-btn" style={{flex:1}}>
+            <button className="social-btn" style={{flex:1,justifyContent:"center"}} onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}>
               <div className="social-icon" style={{background:"rgba(219,68,55,.15)",color:"#EA4335",fontWeight:700,fontSize:".85rem"}}>G</div>Google
-            </button>
-            <button className="social-btn" style={{flex:1}}>
-              <div className="social-icon" style={{background:"rgba(10,102,194,.15)",color:"#0A66C2",fontWeight:700,fontSize:".75rem"}}>in</div>LinkedIn
             </button>
           </div>
           <button className="btn-cta" onClick={nextStep}>Continue →</button>

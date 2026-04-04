@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { STAR_LAYERS, TORUS_RINGS, WIREFRAME_SHAPES, CAMERA_CONFIG } from './config';
+import { createSafeRenderer } from '../../../utils/safeWebGL';
 import { 
   createParticleSystem, 
   createTorusRing, 
@@ -30,11 +31,8 @@ export class ThreeBackground {
    */
   init() {
     // Setup renderer
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
-      alpha: true,
-      antialias: true
-    });
+    this.renderer = createSafeRenderer(THREE, this.canvas);
+    if (!this.renderer) return false;
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     

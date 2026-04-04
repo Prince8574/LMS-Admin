@@ -6,8 +6,9 @@ import SettingsPage    from './frontend/Settings/SettingsPage';
 import StudentsPage    from './frontend/Students';
 import RevenuePage     from './frontend/Revenue';
 import AuthPage        from './frontend/Auth/AuthPage';
-import AnalyticsPage   from './frontend/Analytics/AnalyticsPage';
 import AssignmentsPage from './frontend/Assignments/AssignmentsPage';
+import AnalyticsPage  from './frontend/Analytics/AnalyticsPage';
+import GoogleCallback  from './frontend/Auth/GoogleCallback';
 import { authService } from './frontend/Auth/services/authService';
 
 function ProtectedRoute({ children }) {
@@ -24,14 +25,15 @@ function App() {
         <Routes>
           {/* Public */}
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/auth/google-callback" element={<GoogleCallback />} />
 
           {/* Protected - Admin */}
           <Route path="/"            element={<ProtectedRoute><AdminLanding /></ProtectedRoute>} />
           <Route path="/courses"     element={<ProtectedRoute><CoursesPage /></ProtectedRoute>} />
           <Route path="/students"    element={<ProtectedRoute><StudentsPage /></ProtectedRoute>} />
           <Route path="/revenue"     element={<ProtectedRoute><RevenuePage /></ProtectedRoute>} />
-          <Route path="/analytics"   element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
           <Route path="/assignments" element={<ProtectedRoute><AssignmentsPage /></ProtectedRoute>} />
+          <Route path="/analytics"   element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
           <Route path="/settings"    element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 
           {/* Fallback */}

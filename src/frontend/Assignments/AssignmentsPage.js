@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import * as THREE from "three";
 import { Sidebar } from "../../components/Sidebar";
 import GradeModal from "./components/GradeModal";
+import { createSafeRenderer } from "../../utils/safeWebGL";
 
 const API   = "http://localhost:5000/api/assignments";
 const token = () => localStorage.getItem("admin_token");
@@ -82,8 +83,8 @@ body{background:#050814;color:#ede8ff;font-family:'Satoshi',sans-serif;overflow:
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transform:translateX(-150%);transition:.45s}
 .btn-primary:hover:not(:disabled)::after{transform:translateX(150%)}
-.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:transparent;color:#4d7a9e;font-family:'Satoshi',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-ghost:hover{border-color:rgba(124,47,255,.3);color:#9d7fff;background:rgba(124,47,255,.06)}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.05);color:#c8ddf0;font-family:'Satoshi',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:rgba(124,47,255,.4);color:#9d7fff;background:rgba(124,47,255,.08)}
 .btn-danger{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:10px;border:1px solid rgba(239,68,68,.22);background:transparent;color:#ef4444;font-family:'Satoshi',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-danger:hover{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.4)}
 .f-pill{padding:5px 13px;border-radius:99px;border:1px solid rgba(255,255,255,.07);background:transparent;color:#4d7a9e;font-family:'Satoshi',sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
@@ -133,7 +134,8 @@ body{background:#050814;color:#ede8ff;font-family:'Satoshi',sans-serif;overflow:
 function useBg(ref) {
   useEffect(function() {
     if (!ref.current) return;
-    const R = new THREE.WebGLRenderer({ canvas: ref.current, alpha: true, antialias: true });
+    const R = createSafeRenderer(THREE, ref.current);
+    if (!R) return;
     R.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     R.setSize(window.innerWidth, window.innerHeight);
     const S = new THREE.Scene();
