@@ -112,56 +112,78 @@ export default function StatusPage() {
         ) : services.length === 0 ? (
           <div style={{ color: '#4d7a9e', textAlign: 'center', padding: '60px 0' }}>
             <div style={{ fontSize: '2rem', marginBottom: 12 }}>📊</div>
-            <div>No data yet — health checks run every 5 minutes</div>
+            <div>No data yet — health checks run every 30 seconds</div>
             <div style={{ fontSize: '.75rem', marginTop: 8 }}>Data will appear after the first check completes</div>
           </div>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {services.map(svc => {
-              const isOk = svc.currentStatus === 'ok';
-              return (
-                <div key={svc.service} style={{
-                  background: 'rgba(255,255,255,.03)',
-                  border: '1px solid rgba(255,255,255,.07)',
-                  borderRadius: 14, padding: '18px 22px',
-                }}>
-                  {/* Service header */}
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div style={{ width: 10, height: 10, borderRadius: '50%', background: isOk ? '#4ade80' : '#ef4444', boxShadow: `0 0 6px ${isOk ? '#4ade80' : '#ef4444'}` }} />
-                      <span style={{ fontSize: '.9rem', fontWeight: 700, color: '#ede8ff' }}>{svc.service}</span>
-                      {svc.latency && (
-                        <span style={{
-                          fontSize: '.65rem', fontFamily: 'monospace',
-                          color: svc.latency < 200 ? '#4ade80' : svc.latency < 500 ? '#f59e0b' : '#ef4444',
-                          background: 'rgba(255,255,255,.05)', padding: '2px 7px', borderRadius: 99,
-                        }}>{svc.latency}ms</span>
-                      )}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                      <span style={{ fontSize: '.72rem', color: '#4d7a9e' }}>
-                        {svc.uptime90d !== undefined ? `${svc.uptime90d}% uptime` : ''}
-                      </span>
-                      <span style={{ fontSize: '.75rem', fontWeight: 700, color: isOk ? '#4ade80' : '#ef4444' }}>
-                        {isOk ? 'Operational' : 'Offline'}
-                      </span>
-                    </div>
+        ) : (() => {
+          const infra    = services.filter(s => !s.service.includes('Admin —') && !s.service.includes('Student —'));
+          const adminSvcs   = services.filter(s => s.service.startsWith('Admin —'));
+          const studentSvcs = services.filter(s => s.service.startsWith('Student —'));
+
+          const ServiceCard = ({ svc }) => {
+            const isOk = svc.currentStatus === 'ok';
+            return (
+              <div style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.07)', borderRadius: 14, padding: '16px 18px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: isOk ? '#4ade80' : '#ef4444', boxShadow: `0 0 5px ${isOk ? '#4ade80' : '#ef4444'}` }} />
+                    <span style={{ fontSize: '.82rem', fontWeight: 700, color: '#ede8ff' }}>{svc.service.replace('Admin — ', '').replace('Student — ', '')}</span>
+                    {svc.latency && <span style={{ fontSize: '.62rem', fontFamily: 'monospace', color: svc.latency < 200 ? '#4ade80' : svc.latency < 500 ? '#f59e0b' : '#ef4444', background: 'rgba(255,255,255,.05)', padding: '1px 6px', borderRadius: 99 }}>{svc.latency}ms</span>}
                   </div>
-
-                  {/* 90-day bar */}
-                  <UptimeBar days={svc.dailyHistory || []} />
-
-                  {/* Footer */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: '.65rem', color: '#4d7a9e' }}>
-                    <span>90 days ago</span>
-                    <span>{svc.message || ''}</span>
-                    <span>Today</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: '.68rem', color: '#4d7a9e' }}>{svc.uptime90d !== undefined ? `${svc.uptime90d}%` : ''}</span>
+                    <span style={{ fontSize: '.72rem', fontWeight: 700, color: isOk ? '#4ade80' : '#ef4444' }}>{isOk ? 'Operational' : 'Offline'}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <UptimeBar days={svc.dailyHistory || []} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 5, fontSize: '.62rem', color: '#4d7a9e' }}>
+                  <span>90 days ago</span>
+                  <span>{svc.message || ''}</span>
+                  <span>Today</span>
+                </div>
+              </div>
+            );
+          };
+
+          return (
+            <div>
+              {/* Infrastructure */}
+              <div style={{ marginBottom: 24 }}>
+                <div style={{ fontSize: '.68rem', fontWeight: 800, letterSpacing: '.12em', color: '#4d7a9e', marginBottom: 12 }}>INFRASTRUCTURE</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {infra.map(svc => <ServiceCard key={svc.service} svc={svc} />)}
+                </div>
+              </div>
+
+              {/* Two column grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+                {/* Admin Panel */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                    <div style={{ fontSize: '.68rem', fontWeight: 800, letterSpacing: '.12em', color: '#7c2fff' }}>⚙ ADMIN PANEL</div>
+                    <div style={{ flex: 1, height: 1, background: 'rgba(124,47,255,.2)' }} />
+                    <span style={{ fontSize: '.62rem', color: '#4d7a9e' }}>:5000</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {adminSvcs.map(svc => <ServiceCard key={svc.service} svc={svc} />)}
+                  </div>
+                </div>
+
+                {/* Student Panel */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                    <div style={{ fontSize: '.68rem', fontWeight: 800, letterSpacing: '.12em', color: '#f0a500' }}>🎓 STUDENT PANEL</div>
+                    <div style={{ flex: 1, height: 1, background: 'rgba(240,165,0,.2)' }} />
+                    <span style={{ fontSize: '.62rem', color: '#4d7a9e' }}>:5001</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {studentSvcs.map(svc => <ServiceCard key={svc.service} svc={svc} />)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
       </div>
     </div>

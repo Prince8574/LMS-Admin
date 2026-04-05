@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const COLLECTION = "users"; // same collection as student-panel users
 
 // Get all students with optional filters & pagination
-async function getAllStudents({ search, status, plan, sortBy = "createdAt", page = 1, limit = 50 } = {}) {
+async function getAllStudents({ search, status, plan, sortBy = "createdAt", page = 1, limit = 50, instructorCourseIds = null } = {}) {
   const db = getDB();
   const filter = { role: "student" };
 
@@ -16,6 +16,18 @@ async function getAllStudents({ search, status, plan, sortBy = "createdAt", page
       { name: { $regex: search, $options: "i" } },
       { email: { $regex: search, $options: "i" } },
     ];
+  }
+
+  // If instructor: only students enrolled in their courses
+  let enrolledStudentIds = null;
+  if (instructorCourseIds !== null) {
+    const enrollments = await db.collection("enrollments").find(
+      { course: { $in: instructorCourseIds } }
+    ).project({ user: 1, student: 1 }).toArray();
+    const ids = [...new Set(enrollments.map(e => (e.user || e.student)?.toString()).filter(Boolean))];
+    enrolledStudentIds = ids.map(id => { try { return new ObjectId(id); } catch { return null; } }).filter(Boolean);
+    if (enrolledStudentIds.length === 0) return { students: [], total: 0, page, pages: 0 };
+    filter._id = { $in: enrolledStudentIds };
   }
 
   const sortMap = {

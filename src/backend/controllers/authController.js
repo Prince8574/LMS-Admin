@@ -196,7 +196,7 @@ async function getMe(req, res) {
     log('INFO', 'GET-ME', '✓ Profile fetched', { email: admin.email });
     res.json({
       success: true,
-      admin: { id: admin._id, name: admin.name, email: admin.email, role: admin.role },
+      admin: { id: admin._id, name: admin.name, email: admin.email, role: admin.role, avatar: admin.avatar || null },
     });
   } catch (err) {
     log('ERROR', 'GET-ME', `✗ Error: ${err.message}`);
@@ -210,4 +210,66 @@ function logout(req, res) {
   res.json({ success: true, message: "Logged out successfully" });
 }
 
-module.exports = { register, login, sendOTP, forgotPassword: sendOTP, verifyOTP, resetPassword, getMe, logout };
+// POST /api/auth/create-instructor  — super_admin only
+async function createInstructor(req, res) {
+  const { name, email, password } = req.body;
+  log('INFO', 'CREATE-INST', 'Create instructor attempt', { by: req.admin?.email, email });
+  try {
+    if (req.admin?.role !== 'super_admin') {
+      return res.status(403).json({ success: false, message: "Only super_admin can create instructors" });
+    }
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: "Name, email and password required" });
+    }
+    const existing = await Admin.findByEmail(email);
+    if (existing) {
+      return res.status(409).json({ success: false, message: "Email already registered" });
+    }
+    const instructor = await Admin.createAdmin({ name, email, password, role: 'instructor' });
+    log('INFO', 'CREATE-INST', '✓ Instructor created', { email, name });
+    res.status(201).json({
+      success: true,
+      message: "Instructor created successfully",
+      instructor: { id: instructor._id, name: instructor.name, email: instructor.email, role: instructor.role },
+    });
+  } catch (err) {
+    log('ERROR', 'CREATE-INST', `✗ Failed: ${err.message}`);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+// GET /api/auth/instructors  — super_admin only: list all instructors + admins
+async function listInstructors(req, res) {
+  try {
+    if (req.admin?.role !== 'super_admin') {
+      return res.status(403).json({ success: false, message: "Access denied" });
+    }
+    const { getDB } = require('../config/db');
+    const db = getDB();
+    // Return ALL admins (instructor + super_admin) so drawer can show their details
+    const instructors = await db.collection('admins')
+      .find({}, { projection: { password: 0, otp: 0, resetToken: 0 } })
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.json({ success: true, data: instructors });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+// DELETE /api/auth/instructors/:id  — super_admin only
+async function deleteInstructor(req, res) {
+  try {
+    if (req.admin?.role !== 'super_admin') {
+      return res.status(403).json({ success: false, message: "Access denied" });
+    }
+    const { getDB } = require('../config/db');
+    const { ObjectId } = require('mongodb');
+    const db = getDB();
+    await db.collection('admins').deleteOne({ _id: new ObjectId(req.params.id), role: 'instructor' });
+    res.json({ success: true, message: "Instructor removed" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+
+module.exports = { register, login, sendOTP, forgotPassword: sendOTP, verifyOTP, resetPassword, getMe, logout, createInstructor, listInstructors, deleteInstructor };

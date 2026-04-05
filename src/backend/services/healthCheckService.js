@@ -3,17 +3,26 @@ const https = require('https');
 const { saveCheck } = require('../models/HealthCheck');
 
 const SERVICES = [
-  { name: 'Admin Backend',    url: 'http://localhost:5000/api/health' },
-  { name: 'Student Backend',  url: 'http://localhost:5001/api/health' },
-  { name: 'MongoDB',          url: null },
-  { name: 'Email Service',    url: null },
-  { name: 'Google OAuth',     url: 'http://localhost:5000/api/auth/google', expectRedirect: true },
-  { name: 'Course API',       url: 'http://localhost:5000/api/courses',     expectAuth: true },
-  { name: 'Student API',      url: 'http://localhost:5000/api/students',    expectAuth: true },
-  { name: 'Assignment API',   url: 'http://localhost:5000/api/assignments', expectAuth: true },
-  { name: 'Enrollment API',   url: 'http://localhost:5001/api/enrollments/my-courses', expectAuth: true },
-  { name: 'Community API',    url: 'http://localhost:5001/api/posts',       expectAuth: true },
-  { name: 'AI Assistant',     url: 'http://localhost:5001/api/ai/health' },
+  // ── Core Infrastructure ──────────────────────────────
+  { name: 'Admin Backend',          url: 'http://localhost:5000/api/health' },
+  { name: 'Student Backend',        url: 'http://localhost:5001/api/health' },
+  { name: 'MongoDB',                url: null },
+  { name: 'Email Service',          url: null },
+  { name: 'Google OAuth',           url: 'http://localhost:5000/api/auth/google', expectRedirect: true },
+
+  // ── Admin Panel APIs (port 5000) ─────────────────────
+  { name: 'Admin — Course API',     url: 'http://localhost:5000/api/courses',     expectAuth: true },
+  { name: 'Admin — Student API',    url: 'http://localhost:5000/api/students',    expectAuth: true },
+  { name: 'Admin — Assignment API', url: 'http://localhost:5000/api/assignments', expectAuth: true },
+  { name: 'Admin — Revenue API',    url: 'http://localhost:5000/api/revenue',     expectAuth: true },
+  { name: 'Admin — Settings API',   url: 'http://localhost:5000/api/settings',    expectAuth: true },
+
+  // ── Student Panel APIs (port 5001) ───────────────────
+  { name: 'Student — Course API',   url: 'http://localhost:5001/api/courses' },
+  { name: 'Student — Enroll API',   url: 'http://localhost:5001/api/enrollments/my-courses', expectAuth: true },
+  { name: 'Student — Assign API',   url: 'http://localhost:5001/api/assignments',            expectAuth: true },
+  { name: 'Student — Community',    url: 'http://localhost:5001/api/posts',                  expectAuth: true },
+  { name: 'Student — AI Assistant', url: 'http://localhost:5001/api/ai/health' },
 ];
 
 function httpGet(url, timeout = 4000) {
@@ -66,7 +75,8 @@ async function checkService(svc, dbStatus, emailReady) {
     } else {
       try {
         const data = JSON.parse(body);
-        ok = status >= 200 && status < 300 && (data.status === 'ok' || data.status === 'OK');
+        // Accept status:'ok', status:'OK', or success:true
+        ok = status >= 200 && status < 300 && (data.status === 'ok' || data.status === 'OK' || data.success === true);
         message = ok ? `${data.db || 'ok'} · ${latency}ms` : `Status: ${data.status}`;
       } catch {
         ok = status >= 200 && status < 300;

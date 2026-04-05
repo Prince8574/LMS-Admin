@@ -4,13 +4,26 @@ const Student = require("../models/Student");
 async function getAll(req, res) {
   try {
     const { search, status, plan, sortBy, page = 1, limit = 50 } = req.query;
+    const isSuperAdmin = req.admin?.role === 'super_admin';
+
+    // Instructor: sirf apne courses ke enrolled students
+    let instructorCourseIds = null;
+    if (!isSuperAdmin) {
+      const { getDB } = require("../config/db");
+      const { ObjectId } = require("mongodb");
+      const db = getDB();
+      const myCourses = await db.collection("courses").find(
+        { adminId: new ObjectId(req.admin.id) },
+        { projection: { _id: 1 } }
+      ).toArray();
+      instructorCourseIds = myCourses.map(c => c._id.toString());
+    }
+
     const result = await Student.getAllStudents({
-      search,
-      status,
-      plan,
-      sortBy,
+      search, status, plan, sortBy,
       page: parseInt(page),
       limit: parseInt(limit),
+      instructorCourseIds, // null = super_admin sees all
     });
     res.json({ success: true, ...result });
   } catch (err) {

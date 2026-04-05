@@ -35,21 +35,21 @@ async function create(req, res) {
 }
 
 // GET /api/courses
+// super_admin sees ALL courses; instructor/admin sees only their own
 async function getAll(req, res) {
   try {
     const { ObjectId } = require("mongodb");
-    const adminObjId = new ObjectId(req.admin.id);
-    // Show courses that belong to this admin OR have no adminId (legacy courses)
-    const filter = {
+    const isSuperAdmin = req.admin?.role === 'super_admin';
+    const filter = isSuperAdmin ? {} : {
       $or: [
-        { adminId: adminObjId },
+        { adminId: new ObjectId(req.admin.id) },
         { adminId: { $exists: false } },
         { adminId: null }
       ]
     };
-    if (req.query.category)   filter.category   = req.query.category;
-    if (req.query.level)      filter.level       = req.query.level;
-    if (req.query.status)     filter.status      = req.query.status;
+    if (req.query.category)  filter.category   = req.query.category;
+    if (req.query.level)     filter.level       = req.query.level;
+    if (req.query.status)    filter.status      = req.query.status;
     if (req.query.published !== undefined)
       filter.isPublished = req.query.published === "true";
     const courses = await getAllCourses(filter);
@@ -118,4 +118,14 @@ async function publish(req, res) {
   }
 }
 
-module.exports = { create, getAll, getOne, update, remove, publish, stats };
+// GET /api/courses/all-instructors — all courses grouped by instructor (for Instructors page)
+async function getAllForInstructors(req, res) {
+  try {
+    const courses = await getAllCourses({});   // no filter — all admins
+    res.json({ success: true, count: courses.length, data: courses });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+}
+
+module.exports = { create, getAll, getOne, update, remove, publish, stats, getAllForInstructors };

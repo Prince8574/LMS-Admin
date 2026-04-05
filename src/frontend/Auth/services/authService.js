@@ -128,4 +128,52 @@ export const authService = {
   },
 
   isLoggedIn: () => !!getToken(),
+
+  getRole: () => {
+    try {
+      const token = getToken();
+      if (!token) return null;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role || null;
+    } catch { return null; }
+  },
+
+  isSuperAdmin: () => {
+    try {
+      const token = getToken();
+      if (!token) return false;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role === 'super_admin';
+    } catch { return false; }
+  },
+
+  // Create instructor (super_admin only)
+  createInstructor: async ({ name, email, password }) => {
+    const token = getToken();
+    const res = await fetch(`${BASE_URL}/instructors`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ name, email, password }),
+    });
+    return res.json();
+  },
+
+  // List all instructors (super_admin only)
+  listInstructors: async () => {
+    const token = getToken();
+    const res = await fetch(`${BASE_URL}/instructors`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.json();
+  },
+
+  // Delete instructor (super_admin only)
+  deleteInstructor: async (id) => {
+    const token = getToken();
+    const res = await fetch(`${BASE_URL}/instructors/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.json();
+  },
 };

@@ -34,8 +34,8 @@ function protect(req, res, next) {
 }
 
 function superAdminOnly(req, res, next) {
-  if (req.admin?.role !== "super-admin") {
-    log('WARN', '✗ Access denied — super-admin required', { email: req.admin?.email, role: req.admin?.role, path: req.path });
+  if (req.admin?.role !== "super_admin") {
+    log('WARN', '✗ Access denied — super_admin required', { email: req.admin?.email, role: req.admin?.role, path: req.path });
     return res.status(403).json({ success: false, message: "Access denied" });
   }
   log('INFO', '✓ Super-admin access granted', { email: req.admin.email, path: req.path });

@@ -1,9 +1,10 @@
 const express  = require("express");
 const router   = express.Router();
 const { protect } = require("../middleware/authMiddleware");
-const { create, getAll, getOne, update, remove, publish, stats } = require("../controllers/courseController");
+const { create, getAll, getOne, update, remove, publish, stats, getAllForInstructors } = require("../controllers/courseController");
 
 router.get("/stats",                    protect, stats);
+router.get("/all-instructors",          protect, getAllForInstructors);
 router.get("/",                         protect, getAll);
 router.get("/:id",                      getOne);
 router.post("/",                        protect, create);

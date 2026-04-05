@@ -30,21 +30,34 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
 
 // POST /api/upload/thumbnail
-router.post("/thumbnail", protect, upload.single("thumbnail"), (req, res) => {
+router.post("/thumbnail", protect, upload.single("thumbnail"), async (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: "No file uploaded" });
 
-  // Copy to student backend uploads so it's available on student server too
+  // Copy to student backend uploads
   try {
     const src  = path.join(uploadDir, req.file.filename);
     const dest = path.join(studentUploadDir, req.file.filename);
     fs.copyFileSync(src, dest);
-    console.log(`[Upload] Copied to student uploads: ${req.file.filename}`);
   } catch (e) {
     console.error("Could not copy to student uploads:", e.message);
   }
 
-  // Return admin server URL (port 5000) — admin frontend uses this
   const adminUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+
+  // If this is an avatar upload (query param ?type=avatar), save to admins collection
+  if (req.query.type === 'avatar' && req.admin?.id) {
+    try {
+      const { getDB } = require("../config/db");
+      const { ObjectId } = require("mongodb");
+      await getDB().collection("admins").updateOne(
+        { _id: new ObjectId(req.admin.id) },
+        { $set: { avatar: adminUrl } }
+      );
+    } catch (e) {
+      console.error("Could not save avatar to admins:", e.message);
+    }
+  }
+
   res.json({ success: true, url: adminUrl });
 });
 

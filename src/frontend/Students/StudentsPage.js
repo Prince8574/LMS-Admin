@@ -4,6 +4,7 @@ import { Sidebar } from '../../components/Sidebar';
 import { StudentDrawer } from './components/StudentDrawer';
 import { AddStudentForm } from './components/AddStudentForm';
 import { studentService } from './studentService';
+import { authService } from '../Auth/services/authService';
 import './Students.css';
 
 const C = {
@@ -134,8 +135,10 @@ export default function StudentsPage() {
         {/* Topbar */}
         <div className="topbar">
           <div>
-            <div className="topbar-title">Students</div>
-            <div style={{ fontFamily: 'DM Mono,monospace', fontSize: '.62rem', color: C.t3 }}>{total.toLocaleString()} students found</div>
+            <div className="topbar-title">{authService.isSuperAdmin() ? 'Students' : 'My Students'}</div>
+            <div style={{ fontFamily: 'DM Mono,monospace', fontSize: '.62rem', color: C.t3 }}>
+              {authService.isSuperAdmin() ? `${total.toLocaleString()} students found` : `${total.toLocaleString()} students enrolled in your courses`}
+            </div>
           </div>
 
           <div className="topbar-search" style={{ marginLeft: 12 }}>

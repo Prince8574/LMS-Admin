@@ -5,6 +5,14 @@ import { FieldGroup } from '../components/FieldGroup';
 import { settingsService } from '../services/settingsService';
 import { AvatarCropModal } from '../components/AvatarCropModal';
 
+function getRoleDisplay(role) {
+  switch (role) {
+    case 'super_admin': return { label: 'Super Admin', icon: '👑', color: '#7c2fff', bg: 'rgba(124,47,255,.1)', border: 'rgba(124,47,255,.25)' };
+    case 'instructor':  return { label: 'Instructor',  icon: '👨‍🏫', color: '#0dd9c4', bg: 'rgba(13,217,196,.1)',  border: 'rgba(13,217,196,.25)' };
+    default:            return { label: 'Admin',       icon: '⬡',   color: '#6979f8', bg: 'rgba(105,121,248,.1)', border: 'rgba(105,121,248,.25)' };
+  }
+}
+
 function getTokenData() {
   try {
     const token = localStorage.getItem('admin_token');
@@ -164,7 +172,7 @@ export function ProfileSection({ save }) {
       if (token) {
         const formData = new FormData();
         formData.append('thumbnail', blob, 'avatar.jpg');
-        const res = await fetch('http://localhost:5000/api/upload/thumbnail', {
+        const res = await fetch('http://localhost:5000/api/upload/thumbnail?type=avatar', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: formData,
@@ -237,7 +245,7 @@ export function ProfileSection({ save }) {
             <div style={{ fontSize: '.8rem', color: C.t2, marginBottom: 10 }}>
               {form.email}
             </div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <div className="status-pill status-active">
                 <div style={{
                   width: 5, height: 5, borderRadius: '50%',
@@ -245,9 +253,22 @@ export function ProfileSection({ save }) {
                 }} />
                 Online
               </div>
-              <div className="status-pill status-info">
-                {form.role || 'Super Admin'}
-              </div>
+              {/* Role badge with proper label */}
+              {(() => {
+                const rd = getRoleDisplay(form.role);
+                return (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    padding: '3px 10px', borderRadius: 99,
+                    background: rd.bg, border: `1px solid ${rd.border}`,
+                    fontFamily: 'DM Mono,monospace', fontSize: '.65rem',
+                    fontWeight: 700, color: rd.color,
+                  }}>
+                    <span>{rd.icon}</span>
+                    <span>{rd.label}</span>
+                  </div>
+                );
+              })()}
               <div className="status-pill" style={{
                 background: 'rgba(167,139,250,.08)',
                 border: '1px solid rgba(167,139,250,.2)',
@@ -295,7 +316,17 @@ export function ProfileSection({ save }) {
             />
           </FieldGroup>
           <FieldGroup label="Role">
-            <input className="field-input" value={form.role} disabled />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 10 }}>
+              {(() => {
+                const rd = getRoleDisplay(form.role);
+                return (
+                  <>
+                    <span style={{ fontSize: '1rem' }}>{rd.icon}</span>
+                    <span style={{ fontFamily: 'DM Mono,monospace', fontSize: '.78rem', fontWeight: 700, color: rd.color }}>{rd.label}</span>
+                  </>
+                );
+              })()}
+            </div>
           </FieldGroup>
         </div>
 

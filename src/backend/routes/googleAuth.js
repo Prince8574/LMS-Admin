@@ -59,7 +59,7 @@ router.get('/callback',
   }),
   (req, res) => {
     const token = jwt.sign(
-      { id: req.user._id, email: req.user.email, role: 'admin', name: req.user.name },
+      { id: req.user._id, email: req.user.email, role: req.user.role || 'admin', name: req.user.name },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || '7d' }
     );
