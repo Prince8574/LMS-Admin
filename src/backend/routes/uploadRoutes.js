@@ -42,7 +42,8 @@ router.post("/thumbnail", protect, upload.single("thumbnail"), async (req, res) 
     console.error("Could not copy to student uploads:", e.message);
   }
 
-  const adminUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+  const BASE = process.env.SERVER_URL || 'http://localhost:5000';
+  const adminUrl = `${BASE}/uploads/${req.file.filename}`;
 
   // If this is an avatar upload (query param ?type=avatar), save to admins collection
   if (req.query.type === 'avatar' && req.admin?.id) {
