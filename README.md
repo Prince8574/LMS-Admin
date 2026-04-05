@@ -286,6 +286,8 @@ EMAIL_PASS           = your_app_password
 GOOGLE_CLIENT_ID     = your_google_client_id
 GOOGLE_CLIENT_SECRET = your_google_client_secret
 GOOGLE_CALLBACK_URL  = http://localhost:5000/api/auth/google/callback
+ADMIN_SECRET_KEY     = SuperAdmin2026
+SERVER_URL           = http://localhost:5000
 ```
 
 ---
@@ -301,6 +303,9 @@ GOOGLE_CALLBACK_URL  = http://localhost:5000/api/auth/google/callback
 └─────────────────────┴───────────────────────────────┘
 
 After login → JWT token → role decoded → scoped dashboard
+
+Register with `ADMIN_SECRET_KEY` → `super_admin` role
+Register without key → `instructor` role
 ```
 
 > ⚠️ Google login requires the email to be pre-registered in the `admins` collection.
@@ -378,6 +383,9 @@ A dedicated analytics page for super admins to monitor all instructors.
 | 8 | 🏷️ Role Badge | Sidebar shows 👑 / 👨‍🏫 badge |
 | 9 | ➕ Add Instructor | Super admin creates instructor accounts |
 | 10 | 🔧 Orphan Fix | Courses from deleted admins auto-transferred |
+| 11 | 🔑 Secret Key Register | `ADMIN_SECRET_KEY` in `.env` → `super_admin` on register |
+| 12 | 🛡️ Moderation Page | Route added, coming soon placeholder |
+| 13 | 🖼️ Avatar URL Fix | Uses `SERVER_URL` env var instead of hardcoded localhost |
 
 ---
 
