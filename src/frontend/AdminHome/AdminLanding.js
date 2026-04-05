@@ -4,6 +4,7 @@ import { authService } from "../Auth/services/authService";
 import * as THREE from "three";
 import { C, GR, FEATURES, STATS, TESTIMONIALS } from "./constants";
 import { AnimatedAvatarSmall } from "../../components/AnimatedAvatarSmall";
+import { useServerStatus } from "../../hooks/useServerStatus";
 import "./AdminLanding.css";
 import { createSafeRenderer } from "../../utils/safeWebGL";
 
@@ -318,6 +319,8 @@ export default function AdminLanding() {
   const [loggedIn,setLoggedIn]=useState(authService.isLoggedIn());
   const [adminUser,setAdminUser]=useState(null);
   const [burst,setBurst]=useState({x:0,y:0,active:false});
+
+  const serverStatus = useServerStatus('http://localhost:5000/api/health');
   const [heroLine,setHeroLine]=useState('');
   const navigate=useNavigate();
 
@@ -478,90 +481,15 @@ export default function AdminLanding() {
           </div>
 
           {/* ── NAV LINKS ── */}
+          {/* ── NAV LINKS ── */}
           <div className="nav-links">
-            {/* Features mega-dropdown */}
-            <div className="nav-link-wrap">
-              <a href="#features" className={`nav-link${activeNav==='features'?' active':''}`} onClick={()=>setActiveNav('features')}>
-                Features<span style={{fontSize:'.55rem',opacity:.45,transition:'transform .2s'}}>▾</span>
-              </a>
-              <div className="nav-dropdown" style={{minWidth:260}}>
-                <div className="dd-section-label">Platform Modules</div>
-                {[
-                  {ico:'📊',label:'Analytics',   sub:'Real-time platform data',col:C.v, link:null},
-                  {ico:'👥',label:'User Mgmt',   sub:'52K+ learners',         col:C.c, link:null},
-                  {ico:'💰',label:'Revenue',     sub:'Billing & payouts',      col:C.am, link:null},
-                  {ico:'📚',label:'Courses',     sub:'1,284 active courses',   col:C.g, link:'/courses'},
-                ].map(({ico,label,sub,col,link})=>(
-                  link ? (
-                    <Link key={label} to={link} style={{textDecoration:'none'}}>
-                      <div className="dd-item">
-                        <div className="dd-icon" style={{background:`${col}13`,border:`1px solid ${col}20`}}>{ico}</div>
-                        <div style={{flex:1}}>
-                          <div style={{fontSize:'.8rem',fontWeight:600,color:C.text}}>{label}</div>
-                          <div style={{fontFamily:'DM Mono,monospace',fontSize:'.6rem',color:C.t2,marginTop:1}}>{sub}</div>
-                        </div>
-                        <div className="dd-arrow">›</div>
-                      </div>
-                    </Link>
-                  ) : (
-                    <div key={label} className="dd-item">
-                      <div className="dd-icon" style={{background:`${col}13`,border:`1px solid ${col}20`}}>{ico}</div>
-                      <div style={{flex:1}}>
-                        <div style={{fontSize:'.8rem',fontWeight:600,color:C.text}}>{label}</div>
-                        <div style={{fontFamily:'DM Mono,monospace',fontSize:'.6rem',color:C.t2,marginTop:1}}>{sub}</div>
-                      </div>
-                      <div className="dd-arrow">›</div>
-                    </div>
-                  )
-                ))}
-                {/* Divider */}
-                <div style={{height:1,background:'rgba(255,255,255,.05)',margin:'6px 4px'}}/>
-                <div className="dd-section-label">Admin Tools</div>
-                {[
-                  {ico:'🛡️',label:'Moderation', sub:'AI-assisted flagging',  col:C.r},
-                  {ico:'👨‍🏫',label:'Instructors',sub:'186 verified experts',  col:C.v2},
-                ].map(({ico,label,sub,col})=>(
-                  <div key={label} className="dd-item">
-                    <div className="dd-icon" style={{background:`${col}13`,border:`1px solid ${col}20`}}>{ico}</div>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:'.8rem',fontWeight:600,color:C.text}}>{label}</div>
-                      <div style={{fontFamily:'DM Mono,monospace',fontSize:'.6rem',color:C.t2,marginTop:1}}>{sub}</div>
-                    </div>
-                    <div className="dd-arrow">›</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <a href="#analytics" className={`nav-link${activeNav==='analytics'?' active':''}`} onClick={()=>setActiveNav('analytics')}>Analytics</a>
-
-            {/* Security dropdown */}
-            <div className="nav-link-wrap">
-              <a href="#security" className={`nav-link${activeNav==='security'?' active':''}`} onClick={()=>setActiveNav('security')}>
-                Security<span style={{fontSize:'.55rem',opacity:.45}}>▾</span>
-              </a>
-              <div className="nav-dropdown">
-                <div className="dd-section-label">Security Suite</div>
-                {[
-                  {ico:'🔐',label:'Multi-Factor Auth',  sub:'TOTP + hardware keys', col:C.g},
-                  {ico:'📋',label:'Audit Logs',         sub:'Full action history',   col:C.v},
-                  {ico:'🌐',label:'IP Whitelist',       sub:'Geo-restrict access',   col:C.c},
-                  {ico:'🔒',label:'AES-256 Encrypt',   sub:'Zero-knowledge model',  col:C.am},
-                ].map(({ico,label,sub,col})=>(
-                  <div key={label} className="dd-item">
-                    <div className="dd-icon" style={{background:`${col}13`,border:`1px solid ${col}20`}}>{ico}</div>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:'.8rem',fontWeight:600,color:C.text}}>{label}</div>
-                      <div style={{fontFamily:'DM Mono,monospace',fontSize:'.6rem',color:C.t2,marginTop:1}}>{sub}</div>
-                    </div>
-                    <div className="dd-arrow">›</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <a href="#pricing" className={`nav-link${activeNav==='pricing'?' active':''}`} onClick={()=>setActiveNav('pricing')}>Pricing</a>
-            <a href="#docs"    className={`nav-link${activeNav==='docs'?' active':''}`}    onClick={()=>setActiveNav('docs')}>Docs</a>
+            <Link to="/"            className={`nav-link${activeNav==='dashboard'?' active':''}`}   onClick={()=>setActiveNav('dashboard')}>Dashboard</Link>
+            <Link to="/courses"     className={`nav-link${activeNav==='courses'?' active':''}`}     onClick={()=>setActiveNav('courses')}>Courses</Link>
+            <Link to="/students"    className={`nav-link${activeNav==='students'?' active':''}`}    onClick={()=>setActiveNav('students')}>Students</Link>
+            <Link to="/revenue"     className={`nav-link${activeNav==='revenue'?' active':''}`}     onClick={()=>setActiveNav('revenue')}>Revenue</Link>
+            <Link to="/assignments" className={`nav-link${activeNav==='assignments'?' active':''}`} onClick={()=>setActiveNav('assignments')}>Assignments</Link>
+            <Link to="/analytics"   className={`nav-link${activeNav==='analytics'?' active':''}`}   onClick={()=>setActiveNav('analytics')}>Analytics</Link>
+            <Link to="/settings"    className={`nav-link${activeNav==='settings'?' active':''}`}    onClick={()=>setActiveNav('settings')}>Settings</Link>
           </div>
 
           {/* ── RIGHT ZONE ── */}
@@ -579,9 +507,47 @@ export default function AdminLanding() {
             <div className="nav-divider"/>
 
             {/* Live status */}
-            <div className="nav-status">
-              <div className="status-dot"/>
-              <span>Operational</span>
+            <div className="nav-link-wrap" style={{position:'relative'}}>
+              <div className="nav-status" style={{borderColor:`${serverStatus.dot}30`,cursor:'default'}}>
+                <div className="status-dot" style={{background:serverStatus.dot, boxShadow:`0 0 6px ${serverStatus.dot}`}}/>
+                <span style={{color:serverStatus.color}}>{serverStatus.label}</span>
+              </div>
+              {/* Tooltip */}
+              <div className="nav-dropdown" style={{minWidth:240,left:0,right:'auto',top:'calc(100% + 8px)',padding:'14px 16px'}}>
+                {/* Header */}
+                <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+                  <div style={{width:8,height:8,borderRadius:'50%',background:serverStatus.dot,boxShadow:`0 0 6px ${serverStatus.dot}`,flexShrink:0}}/>
+                  <span style={{fontSize:'.72rem',fontWeight:800,color:'#ede8ff',letterSpacing:'.08em'}}>SYSTEM STATUS</span>
+                  <span style={{marginLeft:'auto',fontSize:'.68rem',fontWeight:700,color:serverStatus.color,background:`${serverStatus.dot}15`,padding:'2px 8px',borderRadius:99,border:`1px solid ${serverStatus.dot}30`}}>{serverStatus.label}</span>
+                </div>
+
+                {/* Rows */}
+                <div style={{display:'flex',flexDirection:'column',gap:7}}>
+                  <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
+                    <span style={{fontSize:'.72rem',color:'#4d7a9e',whiteSpace:'nowrap'}}>Backend</span>
+                    <span style={{fontSize:'.72rem',color:'#c8ddf0',fontFamily:'DM Mono,monospace',textAlign:'right'}}>{serverStatus.detail || '—'}</span>
+                  </div>
+                  {serverStatus.latency && (
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
+                      <span style={{fontSize:'.72rem',color:'#4d7a9e',whiteSpace:'nowrap'}}>Latency</span>
+                      <span style={{
+                        fontSize:'.72rem',fontWeight:700,fontFamily:'DM Mono,monospace',
+                        color: serverStatus.latency < 200 ? '#4ade80' : serverStatus.latency < 500 ? '#f59e0b' : '#ef4444'
+                      }}>{serverStatus.latency}ms</span>
+                    </div>
+                  )}
+                  {serverStatus.lastCheck && (
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
+                      <span style={{fontSize:'.72rem',color:'#4d7a9e',whiteSpace:'nowrap'}}>Last check</span>
+                      <span style={{fontSize:'.72rem',color:'#c8ddf0',fontFamily:'DM Mono,monospace'}}>{serverStatus.lastCheck}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid rgba(255,255,255,.06)',fontSize:'.65rem',color:'#4d7a9e',display:'flex',alignItems:'center',gap:5}}>
+                  <span>🔄</span> Auto-refreshes every 30s
+                </div>
+              </div>
             </div>
 
             {/* Notification bell */}
@@ -589,9 +555,6 @@ export default function AdminLanding() {
               🔔
               <div className="icon-badge" style={{background:C.r}}/>
             </div>
-
-            {/* Settings */}
-            <div className="nav-icon-btn" title="Settings">⚙</div>
 
             <div className="nav-divider"/>
 
@@ -614,20 +577,49 @@ export default function AdminLanding() {
 
             {/* Avatar + logout — only when logged in */}
             {loggedIn && (
-              <div style={{display:'flex',alignItems:'center',gap:10}}>
-                <div className="nav-avatar-wrap" title={adminUser?.name || "Admin"}>
-                  <AnimatedAvatarSmall
-                    avatarUrl={localStorage.getItem('admin_avatar')}
-                    initials={adminUser?.name ? adminUser.name.slice(0,2).toUpperCase() : 'AD'}
-                    size={38}
-                  />
-                  <div className="avatar-status"/>
+              <div className="nav-link-wrap" style={{position:'relative'}}>
+                <div style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',padding:'5px 10px',borderRadius:10,border:'1px solid rgba(255,255,255,.1)',background:'rgba(255,255,255,.04)',transition:'all .2s'}}
+                  onMouseEnter={e=>{e.currentTarget.style.background='rgba(124,47,255,.1)';e.currentTarget.style.borderColor='rgba(124,47,255,.3)';}}
+                  onMouseLeave={e=>{e.currentTarget.style.background='rgba(255,255,255,.04)';e.currentTarget.style.borderColor='rgba(255,255,255,.1)';}}
+                >
+                  <div className="nav-avatar-wrap" title={adminUser?.name || "Admin"}>
+                    <AnimatedAvatarSmall
+                      avatarUrl={localStorage.getItem('admin_avatar')}
+                      initials={adminUser?.name ? adminUser.name.slice(0,2).toUpperCase() : 'AD'}
+                      size={34}
+                    />
+                    <div className="avatar-status"/>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',lineHeight:1.2}}>
+                    <span style={{fontSize:'.75rem',fontWeight:600,color:'#fff'}}>{adminUser?.name || "Admin"}</span>
+                    <span style={{fontSize:'.62rem',color:'rgba(255,255,255,.4)',fontFamily:'DM Mono,monospace'}}>{adminUser?.role || "admin"}</span>
+                  </div>
+                  <span style={{fontSize:'.55rem',opacity:.45,marginLeft:2}}>▾</span>
                 </div>
-                <div style={{display:'flex',flexDirection:'column',lineHeight:1.2}}>
-                  <span style={{fontSize:'.75rem',fontWeight:600,color:'#fff'}}>{adminUser?.name || "Admin"}</span>
-                  <span style={{fontSize:'.62rem',color:'rgba(255,255,255,.4)',fontFamily:'DM Mono,monospace'}}>{adminUser?.role || "admin"}</span>
+
+                {/* Hover Dropdown */}
+                <div className="nav-dropdown" style={{right:0,left:'auto',minWidth:200,top:'calc(100% + 8px)'}}>
+                  <div className="dd-section-label">Quick Access</div>
+                  {[
+                    {ico:'📊',label:'Analytics',  path:'/analytics',  col:C.v},
+                    {ico:'👥',label:'Students',   path:'/students',   col:C.c},
+                    {ico:'💰',label:'Revenue',    path:'/revenue',    col:C.am},
+                    {ico:'⚙️',label:'Settings',   path:'/settings',   col:C.t2},
+                  ].map(({ico,label,path,col})=>(
+                    <Link key={label} to={path} style={{textDecoration:'none'}}>
+                      <div className="dd-item">
+                        <div className="dd-icon" style={{background:`${col}13`,border:`1px solid ${col}20`}}>{ico}</div>
+                        <div style={{flex:1,fontSize:'.8rem',fontWeight:600,color:C.text}}>{label}</div>
+                        <div className="dd-arrow">›</div>
+                      </div>
+                    </Link>
+                  ))}
+                  <div style={{height:1,background:'rgba(255,255,255,.05)',margin:'6px 4px'}}/>
+                  <div className="dd-item" onClick={handleLogout} style={{cursor:'pointer'}}>
+                    <div className="dd-icon" style={{background:'rgba(239,68,68,.1)',border:'1px solid rgba(239,68,68,.2)'}}>🚪</div>
+                    <div style={{flex:1,fontSize:'.8rem',fontWeight:600,color:'#ef4444'}}>Logout</div>
+                  </div>
                 </div>
-                <button className="btn-nav-ghost" onClick={handleLogout} style={{marginLeft:4}}>Logout</button>
               </div>
             )}
           </div>
@@ -643,7 +635,7 @@ export default function AdminLanding() {
           <div>
             <div className="hero-tag" style={{opacity:0,marginBottom:24}}>
               <div style={{width:6,height:6,borderRadius:'50%',background:C.v,animation:'dotBlink 2s infinite'}}/>
-              LEARNVERSE ADMIN CONSOLE v2.6
+              LEARNVERSE ADMIN CONSOLE
             </div>
 
             {/* Typewriter heading */}

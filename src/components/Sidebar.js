@@ -17,7 +17,13 @@ const SB_ITEMS = [
   { id: 'students',    ico: '👥',  l: 'Students',     badge: '52K', bc: '#8b5cf6', path: '/students' },
   { id: 'revenue',     ico: '💰',  l: 'Revenue',      path: '/revenue' },
   { id: 'assignments', ico: '📝',  l: 'Assignments',  path: '/assignments' },
+  { id: 'analytics',   ico: '📊',  l: 'Analytics',    path: '/analytics' },
   { id: 'settings',    ico: '⚙',  l: 'Settings',     path: '/settings' },
+];
+
+const SB_TOOLS = [
+  { id: 'moderation',  ico: '🛡️', l: 'Moderation',   path: '/moderation' },
+  { id: 'instructors', ico: '👨‍🏫', l: 'Instructors',  path: '/instructors' },
 ];
 
 export function Sidebar() {
@@ -31,6 +37,9 @@ export function Sidebar() {
     if (path.startsWith('/students'))    return 'students';
     if (path.startsWith('/revenue'))     return 'revenue';
     if (path.startsWith('/assignments')) return 'assignments';
+    if (path.startsWith('/analytics'))   return 'analytics';
+    if (path.startsWith('/moderation'))  return 'moderation';
+    if (path.startsWith('/instructors')) return 'instructors';
     if (path.startsWith('/settings'))    return 'settings';
     return 'dashboard';
   };
@@ -116,6 +125,13 @@ export function Sidebar() {
             <span className="sb-icon">{i.ico}</span>
             <span>{i.l}</span>
             {i.badge && <div className="sb-badge" style={{ background: `${i.bc}18`, border: `1px solid ${i.bc}28`, color: i.bc }}>{i.badge}</div>}
+          </div>
+        )}
+        <div className="sb-section" style={{ marginTop: 6 }}>Admin Tools</div>
+        {SB_TOOLS.map(i =>
+          <div key={i.id} className={`sb-item${activeSb === i.id ? ' active' : ''}`} onClick={() => navigate(i.path)}>
+            <span className="sb-icon">{i.ico}</span>
+            <span>{i.l}</span>
           </div>
         )}
       </div>
