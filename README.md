@@ -1,135 +1,204 @@
 <div align="center">
 
-# 🎓 LEARNING MANAGEMENT SYSTEM
-## ⚙️ Admin Panel — Project Report
+<img src="https://capsule-render.vercel.app/api?type=waving&color=7c2fff&height=200&section=header&text=LearnVerse%20Admin&fontSize=48&fontColor=ffffff&fontAlignY=38&desc=LMS%20Admin%20Panel%20v2.6&descAlignY=58&descSize=18" width="100%"/>
+
+# ⚙️ LMS Admin Panel — Project Report
 
 <br/>
 
-![React](https://img.shields.io/badge/React-18.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![NodeJS](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com)
+[![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io)
 
 <br/>
 
-![GSAP](https://img.shields.io/badge/Animation-GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black)
-![Three.js](https://img.shields.io/badge/3D-Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
-![Google OAuth](https://img.shields.io/badge/OAuth-Google-4285F4?style=for-the-badge&logo=google&logoColor=white)
-![Nodemailer](https://img.shields.io/badge/Email-Nodemailer-0F9DCE?style=for-the-badge&logo=gmail&logoColor=white)
-![PDFKit](https://img.shields.io/badge/PDF-PDFKit-FF0000?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)
-![Multer](https://img.shields.io/badge/Upload-Multer-FF6600?style=for-the-badge&logo=files&logoColor=white)
+[![GSAP](https://img.shields.io/badge/Animation-GSAP-88CE02?style=for-the-badge&logo=greensock&logoColor=black)](https://greensock.com)
+[![Three.js](https://img.shields.io/badge/3D-Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org)
+[![Google OAuth](https://img.shields.io/badge/OAuth-Google-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://developers.google.com)
+[![PDFKit](https://img.shields.io/badge/PDF-PDFKit-FF0000?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://pdfkit.org)
 
 <br/>
 
-**Project Title:** LMS Admin Dashboard &nbsp;|&nbsp; **Author:** Prince &nbsp;|&nbsp; **Version:** 1.0.0
+> **Project Title:** LMS Admin Dashboard &nbsp;|&nbsp; **Author:** Prince &nbsp;|&nbsp; **Version:** 2.6.0
 
----
+<br/>
+
+[![GitHub stars](https://img.shields.io/github/stars/Prince8574/LMS-Admin?style=social)](https://github.com/Prince8574/LMS-Admin)
+&nbsp;&nbsp;
+[![GitHub last commit](https://img.shields.io/github/last-commit/Prince8574/LMS-Admin?color=7c2fff)](https://github.com/Prince8574/LMS-Admin)
 
 </div>
 
+---
+
 ## 📋 1. Project Overview
 
-The **LMS Admin Panel** is a comprehensive web-based administration dashboard designed to manage all aspects of a Learning Management System. It provides administrators with full control over courses, students, assignments, revenue, and platform settings through a modern and responsive interface.
+The **LearnVerse Admin Panel** is a full-featured, role-based LMS administration dashboard built with React 19 + Node.js + MongoDB Atlas. It gives platform owners and instructors complete control over courses, students, assignments, revenue, and settings — all in a single, beautiful interface.
+
+```
+🎯 One platform to manage courses · students · revenue · instructors
+```
 
 ---
 
 ## 🎯 2. Objectives
 
-- ✅ Provide a centralized dashboard for managing the LMS platform
-- ✅ Enable course creation, editing, and publishing workflows
-- ✅ Track student enrollment, progress, and performance
-- ✅ Automate certificate generation upon course completion
-- ✅ Monitor revenue and payment transactions
-- ✅ Google OAuth 2.0 Sign In for admins
-- ✅ Industry-level server & browser console logging
+| # | Objective | Status |
+|---|-----------|--------|
+| 1 | Centralized dashboard for LMS management | ✅ Done |
+| 2 | Course creation, editing & publishing workflow | ✅ Done |
+| 3 | Student enrollment, progress & performance tracking | ✅ Done |
+| 4 | Assignment grading & certificate auto-generation | ✅ Done |
+| 5 | Revenue monitoring & financial reports | ✅ Done |
+| 6 | Google OAuth 2.0 + JWT + OTP authentication | ✅ Done |
+| 7 | Role-based access control (Super Admin / Instructor) | ✅ Done |
+| 8 | Instructor management & analytics dashboard | ✅ Done |
 
 ---
 
 ## 🏗️ 3. System Architecture
 
 ```
-┌─────────────────────────────────────────────────┐
-│                  CLIENT LAYER                   │
-│         React.js + GSAP + Three.js              │
-└────────────────────┬────────────────────────────┘
-                     │ HTTP / REST API
-┌────────────────────▼────────────────────────────┐
-│                 SERVER LAYER                    │
-│          Node.js + Express.js (Port 5000)       │
-│  Auth · Courses · Students · Revenue · Email    │
-│         Google OAuth 2.0 · Passport.js          │
-└────────────────────┬────────────────────────────┘
-                     │ Mongoose ODM
-┌────────────────────▼────────────────────────────┐
-│               DATABASE LAYER                    │
-│              MongoDB Atlas                      │
-└─────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                    CLIENT LAYER                      │
+│          React 19 · GSAP · Three.js · CSS            │
+│         localhost:3000  (Admin Panel)                │
+└─────────────────────┬────────────────────────────────┘
+                      │  REST API  (HTTP/JSON)
+┌─────────────────────▼────────────────────────────────┐
+│                   SERVER LAYER                       │
+│           Node.js + Express.js  :5000                │
+│   Auth · Courses · Students · Revenue · Upload       │
+│        Google OAuth 2.0 · Passport.js · JWT          │
+└─────────────────────┬────────────────────────────────┘
+                      │  MongoDB Driver
+┌─────────────────────▼────────────────────────────────┐
+│                  DATABASE LAYER                      │
+│               MongoDB Atlas (Cloud)                  │
+│  admins · courses · users · enrollments · payments   │
+└──────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📦 4. Module Description
+## 👥 4. Role-Based Access Control
 
-| # | 🔷 Module | 📝 Description |
+> **v2.6 Feature** — Multi-role system with scoped data access
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       ADMIN ROLES                           │
+├───────────────────┬─────────────────────────────────────────┤
+│  👑 super_admin   │  Full access — all data, all pages      │
+│  👨‍🏫 instructor   │  Own courses, assignments & students     │
+└───────────────────┴─────────────────────────────────────────┘
+```
+
+### Access Matrix
+
+| 📄 Page | 👑 Super Admin | 👨‍🏫 Instructor |
+|---------|:--------------:|:--------------:|
+| 🏠 Dashboard | ✅ | ✅ |
+| 📚 Courses | ✅ All | ✅ Own only |
+| 📝 Assignments | ✅ All | ✅ Own only |
+| 👥 Students | ✅ All | ✅ Own enrolled |
+| � Revenue | ✅ | ❌ |
+| 📊 Analytics | ✅ | ❌ |
+| �‍🏫 Instructors | ✅ | ❌ |
+| �️ Moderation | ✅ | ❌ |
+| ⚙️ Settings | ✅ | ✅ |
+
+---
+
+## 📦 5. Module Description
+
+| # | � Module | � Description |
 |---|-----------|----------------|
-| 1 | 🔐 **Authentication** | JWT login, OTP verification, Google OAuth 2.0 |
-| 2 | 📚 **Course Management** | Create, update, publish/unpublish courses with curriculum builder |
-| 3 | 👨‍🎓 **Student Management** | View student profiles, enrollment status, and progress tracking |
-| 4 | 📝 **Assignment Management** | Create assignments, review submissions, and provide grades/feedback |
-| 5 | 💰 **Revenue & Analytics** | Payment tracking, revenue charts, and financial reports |
-| 6 | 🏅 **Certificate Service** | Auto-generate and email PDF certificates on course completion |
-| 7 | ⚙️ **Settings** | Platform-wide configuration including branding and permissions |
-| 8 | 📧 **Email Notifications** | Automated email triggers via Nodemailer |
+| 1 | 🔐 **Authentication** | JWT login, OTP email verify, Google OAuth 2.0 |
+| 2 | � **Course Management** | Create, edit, publish courses with curriculum builder |
+| 3 | 👨‍🎓 **Student Management** | Profiles, enrollment, progress — role-filtered |
+| 4 | � **Assignment Management** | Create, grade submissions, generate certificates |
+| 5 | � **Revenue & Analytics** | Transactions, payouts, charts, financial reports |
+| 6 | 👨‍🏫 **Instructors Dashboard** | Analytics, profile drawer, add/remove instructors |
+| 7 | 🏅 **Certificate Service** | Auto PDF certificate generation via PDFKit |
+| 8 | ⚙️ **Settings** | Profile, security, notifications, platform config |
+| 9 | � **Email Notifications** | OTP, welcome, certificate emails via Nodemailer |
 
 ---
 
-## 🛠️ 5. Technology Stack
+## �️ 6. Technology Stack
 
-| Layer | 🔧 Technology | 🎯 Purpose |
-|-------|--------------|-----------|
-| ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black&style=flat) | React.js 18 | UI rendering and component management |
-| ![GSAP](https://img.shields.io/badge/-GSAP-88CE02?logo=greensock&logoColor=black&style=flat) | GSAP | Smooth UI transitions and animations |
-| ![Three.js](https://img.shields.io/badge/-Three.js-000000?logo=threedotjs&logoColor=white&style=flat) | Three.js | Background visual effects |
-| ![Node](https://img.shields.io/badge/-Node.js-339933?logo=nodedotjs&logoColor=white&style=flat) | Node.js | Server-side JavaScript execution |
-| ![Express](https://img.shields.io/badge/-Express-000000?logo=express&logoColor=white&style=flat) | Express.js | REST API routing and middleware |
-| ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?logo=mongodb&logoColor=white&style=flat) | MongoDB Atlas | NoSQL cloud database |
-| ![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white&style=flat) | JWT + bcryptjs | Secure token-based auth |
-| ![Google](https://img.shields.io/badge/-Google_OAuth-4285F4?logo=google&logoColor=white&style=flat) | Passport.js + Google OAuth 2.0 | Social login |
-| ![Multer](https://img.shields.io/badge/-Multer-FF6600?style=flat) | Multer | Image and document uploads |
-| ![Nodemailer](https://img.shields.io/badge/-Nodemailer-0F9DCE?logo=gmail&logoColor=white&style=flat) | Nodemailer | Transactional email delivery |
-| ![PDFKit](https://img.shields.io/badge/-PDFKit-FF0000?logo=adobeacrobatreader&logoColor=white&style=flat) | PDFKit | Certificate PDF creation |
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=black&style=flat) | React.js 19 | UI rendering & routing |
+| ![GSAP](https://img.shields.io/badge/-GSAP-88CE02?logo=greensock&logoColor=black&style=flat) | GSAP 3.14 | Animations & transitions |
+| ![Three.js](https://img.shields.io/badge/-Three.js-000000?logo=threedotjs&logoColor=white&style=flat) | Three.js | Particle backgrounds |
+| ![Node](https://img.shields.io/badge/-Node.js-339933?logo=nodedotjs&logoColor=white&style=flat) | Node.js | Server runtime |
+| ![Express](https://img.shields.io/badge/-Express-000000?logo=express&logoColor=white&style=flat) | Express.js | REST API framework |
+| ![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?logo=mongodb&logoColor=white&style=flat) | MongoDB Atlas | Cloud NoSQL database |
+| ![JWT](https://img.shields.io/badge/-JWT-000000?logo=jsonwebtokens&logoColor=white&style=flat) | JWT + bcryptjs | Token auth & password hashing |
+| ![Google](https://img.shields.io/badge/-Google_OAuth-4285F4?logo=google&logoColor=white&style=flat) | Passport.js | Social login |
+| ![Multer](https://img.shields.io/badge/-Multer-FF6600?style=flat) | Multer | File & image uploads |
+| ![Nodemailer](https://img.shields.io/badge/-Nodemailer-0F9DCE?logo=gmail&logoColor=white&style=flat) | Nodemailer | Email delivery |
+| ![PDFKit](https://img.shields.io/badge/-PDFKit-FF0000?logo=adobeacrobatreader&logoColor=white&style=flat) | PDFKit | Certificate PDF generation |
 
 ---
 
-## 📁 6. Project Structure
+## 📁 7. Project Structure
 
 ```
 admin/
-├── 📂 public/                        # Static assets
+├── 📂 public/
 ├── 📂 src/
-│   ├── 📂 backend/                   # Node.js + Express server
+│   ├── 📂 backend/                        # Node.js + Express API
 │   │   ├── 📂 config/
-│   │   │   └── 📄 db.js              # MongoDB connection
-│   │   ├── 📂 controllers/           # Business logic handlers
-│   │   ├── 📂 middleware/            # Auth & validation middleware
-│   │   ├── 📂 models/                # Mongoose data models
-│   │   ├── 📂 routes/                # API route definitions
-│   │   │   └── 📄 googleAuth.js      # Google OAuth routes
-│   │   ├── 📂 services/              # Certificate & email services
-│   │   ├── 📂 uploads/               # Uploaded media files
-│   │   └── 📄 server.js              # Express app entry point
-│   ├── 📂 frontend/                  # React pages & components
-│   │   ├── 📂 AdminHome/             # Landing & dashboard
-│   │   ├── 📂 Analytics/             # Analytics page
-│   │   ├── 📂 Assignments/           # Assignment management
-│   │   ├── 📂 Auth/                  # Login, Register, GoogleCallback
-│   │   ├── 📂 Courses/               # Course management
-│   │   ├── 📂 Revenue/               # Revenue analytics
-│   │   ├── 📂 Settings/              # Platform settings
-│   │   └── 📂 Students/              # Student management
-│   ├── 📂 components/                # Shared UI components
-│   └── 📄 App.js                     # Root component & routing
+│   │   │   └── 📄 db.js                   # MongoDB connection
+│   │   ├── 📂 controllers/
+│   │   │   ├── 📄 authController.js       # Login, register, instructor CRUD
+│   │   │   ├── 📄 courseController.js     # Role-filtered course ops
+│   │   │   ├── 📄 assignmentController.js # Role-filtered assignments
+│   │   │   ├── 📄 studentController.js    # Role-filtered students
+│   │   │   ├── 📄 revenueController.js
+│   │   │   └── 📄 settingsController.js
+│   │   ├── 📂 middleware/
+│   │   │   └── 📄 authMiddleware.js       # JWT protect + superAdminOnly
+│   │   ├── 📂 models/
+│   │   │   ├── 📄 Admin.js
+│   │   │   ├── 📄 Course.js
+│   │   │   ├── 📄 Student.js              # instructorCourseIds filter
+│   │   │   └── � Revenue.js
+│   │   ├── 📂 routes/
+│   │   │   ├── 📄 authRoutes.js           # + instructor management routes
+│   │   │   ├── 📄 courseRoutes.js
+│   │   │   ├── � googleAuth.js
+│   │   │   └── 📄 uploadRoutes.js         # avatar save to DB
+│   │   ├── 📂 services/
+│   │   │   ├── 📄 certificateService.js
+│   │   │   └── 📄 emailService.js
+│   │   └── 📄 server.js
+│   │
+│   ├── 📂 frontend/
+│   │   ├── 📂 AdminHome/                  # Landing & dashboard
+│   │   ├── 📂 Analytics/
+│   │   ├── 📂 Assignments/
+│   │   ├── 📂 Auth/
+│   │   ├── 📂 Courses/
+│   │   ├── 📂 Instructors/                # ← NEW in v2.6
+│   │   │   ├── 📄 InstructorsPage.js
+│   │   │   ├── 📄 InstructorsPage.css
+│   │   │   └── 📄 index.js
+│   │   ├── 📂 Revenue/
+│   │   ├── 📂 Settings/
+│   │   ├── 📂 Status/
+│   │   └── 📂 Students/
+│   │
+│   ├── 📂 components/
+│   │   ├── 📄 Sidebar.js                  # Role-based menu items
+│   │   └── 📄 AnimatedAvatarSmall.js
+│   │
+│   └── 📄 App.js                          # Routes + SuperAdminRoute guard
+│
 ├── 📄 .gitignore
 ├── 📄 package.json
 └── 📄 README.md
@@ -137,104 +206,191 @@ admin/
 
 ---
 
-## 🌐 7. API Endpoints Summary
+## 🌐 8. API Endpoints
 
-| Method | 🔗 Endpoint | 📋 Description |
-|--------|------------|----------------|
+### � Auth
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/login` | Admin login |
-| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/send-otp` | Send OTP to email |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/register` | Register admin |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/send-otp` | Send OTP |
 | ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/verify-otp` | Verify OTP |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/auth/google` | Google OAuth redirect |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/auth/google/callback` | Google OAuth callback |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/courses` | Get all courses |
-| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/courses` | Create new course |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/students` | Get all students |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/assignments` | Get all assignments |
-| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/assignments/:id/grade` | Grade a submission |
-| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/revenue` | Get revenue data |
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/auth/me` | Get current user |
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/auth/google` | Google OAuth |
+
+### �‍🏫 Instructor Management *(super_admin only)*
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/auth/instructors` | Create instructor |
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/auth/instructors` | List all instructors |
+| ![DELETE](https://img.shields.io/badge/DELETE-F93E3E?style=flat) | `/api/auth/instructors/:id` | Remove instructor |
+
+### 📚 Courses
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/courses` | Get courses (role-filtered) |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/courses` | Create course |
+| ![PUT](https://img.shields.io/badge/PUT-FCA130?style=flat) | `/api/courses/:id` | Update course |
+| ![DELETE](https://img.shields.io/badge/DELETE-F93E3E?style=flat) | `/api/courses/:id` | Delete course |
+| ![PATCH](https://img.shields.io/badge/PATCH-50E3C2?style=flat) | `/api/courses/:id/publish` | Toggle publish |
+
+### 👥 Students
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/students` | Get students (role-filtered) |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/students` | Add student |
+| ![PATCH](https://img.shields.io/badge/PATCH-50E3C2?style=flat) | `/api/students/:id/status` | Update status |
+
+### 📝 Assignments
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| ![GET](https://img.shields.io/badge/GET-61AFFE?style=flat) | `/api/assignments` | Get assignments (role-filtered) |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/assignments` | Create assignment |
+| ![POST](https://img.shields.io/badge/POST-49CC90?style=flat) | `/api/assignments/:id/grade` | Grade submission |
 
 ---
 
-## 🚀 8. Installation & Setup
+## 🚀 9. Installation & Setup
 
 ### ✅ Prerequisites
-- Node.js v18+
-- MongoDB Atlas account
-- Google Cloud Console project (for OAuth)
+```
+Node.js v18+  ·  MongoDB Atlas account  ·  Google Cloud Console project
+```
 
-### 💻 Frontend Setup
+### 💻 Frontend
 ```bash
 cd admin
 npm install
-npm start
+npm start          # → http://localhost:3000
 ```
 
-### 🖥️ Backend Setup
+### �️ Backend
 ```bash
 cd admin/src/backend
 npm install
-node server.js
+node server.js     # → http://localhost:5000
 ```
 
-### 🔧 Environment Configuration
-
-Create `.env` in `admin/src/backend/`:
+### 🔧 Environment Variables
+Create `admin/src/backend/.env`:
 
 ```env
-PORT                = 5000
-MONGO_URI           = your_mongodb_connection_string
-JWT_SECRET          = your_jwt_secret_key
-JWT_EXPIRES         = 7d
-CLIENT_URL          = http://localhost:3000
-EMAIL_USER          = your_email@gmail.com
-EMAIL_PASS          = your_app_password
-GOOGLE_CLIENT_ID    = your_google_client_id
-GOOGLE_CLIENT_SECRET= your_google_client_secret
-GOOGLE_CALLBACK_URL = http://localhost:5000/api/auth/google/callback
+PORT                 = 5000
+MONGO_URI            = mongodb+srv://<user>:<pass>@cluster.mongodb.net/learnverse
+DB_NAME              = learnverse
+JWT_SECRET           = your_super_secret_key
+JWT_EXPIRES          = 7d
+CLIENT_URL           = http://localhost:3000
+EMAIL_USER           = your_email@gmail.com
+EMAIL_PASS           = your_app_password
+GOOGLE_CLIENT_ID     = your_google_client_id
+GOOGLE_CLIENT_SECRET = your_google_client_secret
+GOOGLE_CALLBACK_URL  = http://localhost:5000/api/auth/google/callback
 ```
 
 ---
 
-## 🔐 9. Auth Flow
+## � 10. Auth Flow
 
 ```
-Email + Password  →  OTP Verify  →  Dashboard
-Google Button     →  Google OAuth  →  Dashboard
+┌─────────────────────────────────────────────────────┐
+│                   LOGIN OPTIONS                     │
+├─────────────────────┬───────────────────────────────┤
+│  � Email + Password│  → OTP Verify → Dashboard     │
+│  � Google Button   │  → OAuth 2.0  → Dashboard     │
+└─────────────────────┴───────────────────────────────┘
+
+After login → JWT token → role decoded → scoped dashboard
 ```
 
-> Google login requires the admin's Google email to be pre-registered in the admins collection.
+> ⚠️ Google login requires the email to be pre-registered in the `admins` collection.
 
 ---
 
-## 🗄️ 10. Database Models
+## �️ 11. Database Models
 
-| 📊 Model | 🔑 Fields |
-|---------|----------|
-| 👤 **Admin** | name, email, password, role |
-| 📚 **Course** | title, description, price, curriculum, isPublished |
-| 🎓 **Student** | name, email, enrolledCourses, progress |
-| 💰 **Revenue** | amount, studentId, courseId, date |
+| � Model | � Key Fields |
+|---------|--------------|
+| 👤 **Admin** | name, email, password, role (`super_admin` / `instructor`), avatar |
+| � **Course** | title, description, price, curriculum, adminId, instructor, isPublished |
+| 🎓 **Student** | name, email, enrolledCourses, avgProgress, plan, status |
+| � **Revenue** | amount, st udentId, courseId, date, status |
 | ⚙️ **Settings** | platformName, logo, emailConfig, permissions |
+| � **Assignment** | title, courseId, createdBy, dueDate, maxScore |
+| � **Submission** | assignmentId, student, score, status, certificateId |
 
 ---
 
-## 🔒 11. Security Measures
+## 🔒 12. Security Measures
 
-- 🛡️ All routes protected with JWT middleware
-- 🔑 Passwords hashed using bcryptjs (salt rounds: 12)
-- 🌍 Environment variables for all sensitive credentials
-- 🚧 CORS configured for allowed origins only
-- ✅ Input validation on all API endpoints
-- 🔐 Google OAuth with admin email whitelist
+```
+🛡️  JWT middleware on all protected routes
+🔑  bcryptjs password hashing (salt: 12)
+🌍  All secrets in .env (never committed)
+🚧  CORS restricted to allowed origins
+✅  Input validation on all endpoints
+🔐  Google OAuth with DB email whitelist
+�  SuperAdminRoute guard on sensitive pages
+```
+
+---
+
+## 📊 13. Instructors Dashboard *(New in v2.6)*
+
+A dedicated analytics page for super admins to monitor all instructors.
+
+```
+/instructors
+├── 📈 Overview Tab
+│   ├── Revenue Bar Chart (per instructor)
+│   ├── Course Distribution Donut
+│   └── Top Performers Cards with Sparklines
+│
+├── 👨‍🏫 All Instructors Tab
+│   ├── Searchable grid with stats
+│   └── Click → Full Profile Drawer
+│       ├── Email, Join Date, Account ID
+│       ├── 6 KPI stats (Revenue, Courses, Students...)
+│       ├── Course list with thumbnails
+│       └── Remove Instructor (with confirm)
+│
+└── 📊 Analytics Tab
+    ├── Revenue Leaderboard
+    ├── Published vs Draft breakdown
+    └── Student Distribution
+```
+
+---
+
+## 🔄 14. Changelog
+
+### 🆕 v2.6 — Role-Based Access Control
+
+| # | Feature | Details |
+|---|---------|---------|
+| 1 | 👑 Super Admin role | Full platform access |
+| 2 | 👨‍🏫 Instructor role | Scoped to own data only |
+| 3 | 📊 Instructors Page | Charts, leaderboard, profile drawer |
+| 4 | 🗂️ Profile Drawer | Email, join date, courses, remove action |
+| 5 | 🖼️ Avatar in DB | Photo saved to `admins` collection |
+| 6 | 👥 My Students | Instructors see only their enrolled students |
+| 7 | 🔒 Route Guards | `SuperAdminRoute` on sensitive pages |
+| 8 | 🏷️ Role Badge | Sidebar shows 👑 / 👨‍🏫 badge |
+| 9 | ➕ Add Instructor | Super admin creates instructor accounts |
+| 10 | 🔧 Orphan Fix | Courses from deleted admins auto-transferred |
 
 ---
 
 <div align="center">
 
----
+<img src="https://capsule-render.vercel.app/api?type=waving&color=7c2fff&height=120&section=footer" width="100%"/>
 
-**🎓 LMS Admin Panel** · Built with ❤️ using React & Node.js · © 2025 Prince
+**🎓 LearnVerse Admin Panel v2.6** · Built with ❤️ using React & Node.js
 
-![GitHub](https://img.shields.io/badge/GitHub-Prince8574-181717?style=for-the-badge&logo=github&logoColor=white)
+[![GitHub](https://img.shields.io/badge/GitHub-Prince8574-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Prince8574)
+&nbsp;
+[![Version](https://img.shields.io/badge/Version-2.6.0-7c2fff?style=for-the-badge)](https://github.com/Prince8574/LMS-Admin)
+
+© 2026 Prince Kumar · LearnVerse Technologies
 
 </div>
