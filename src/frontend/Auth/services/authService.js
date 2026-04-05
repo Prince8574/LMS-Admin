@@ -49,12 +49,12 @@ export const authService = {
     return data;
   },
 
-  register: async (name, email, password) => {
+  register: async (name, email, password, secretKey = '') => {
     clog('INFO', 'REGISTER', `Registering admin account for ${email}`);
-    const data = await request("/register", { name, email, password });
+    const data = await request("/register", { name, email, password, secretKey });
     if (data.success) {
       saveToken(data.token);
-      clog('SUCCESS', 'REGISTER', `Admin account created`, { name, email });
+      clog('SUCCESS', 'REGISTER', `Admin account created — role: ${data.admin?.role}`, { name, email });
     } else {
       clog('WARN', 'REGISTER', data.message || 'Registration failed');
     }

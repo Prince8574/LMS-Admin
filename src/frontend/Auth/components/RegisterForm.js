@@ -10,6 +10,7 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
   const [name, setName]           = useState("");
   const [email, setEmail]         = useState("");
   const [phone, setPhone]         = useState("");
+  const [secretKey, setSecretKey] = useState("");
   const [pwd, setPwd]             = useState("");
   const [confirm, setConfirm]     = useState("");
   const [agreed, setAgreed]       = useState(false);
@@ -57,7 +58,7 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
       setLoading(true);
       try {
         // Register account
-        const data = await authService.register(name, email, pwd);
+        const data = await authService.register(name, email, pwd, secretKey);
         if (!data.success) { setErrors({ pwd: data.message || "Registration failed" }); return; }
 
         // Send OTP for email verification
@@ -143,6 +144,11 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
             error={!!errors.email} hint={errors.email} success={email.includes("@")&&!errors.email}/>
           <Field label="Phone (Optional)" icon="📱" placeholder="+91 98765 43210"
             value={phone} onChange={setPhone}/>
+          {/* Secret key for super_admin — optional, leave blank for instructor */}
+          <Field label="Admin Secret Key (Optional)" icon="🔑" type="password"
+            placeholder="Leave blank for Instructor role"
+            value={secretKey} onChange={setSecretKey}
+            hint="Enter secret key to register as Super Admin"/>
           <div style={{display:"flex",gap:10,marginBottom:20}}>
             <button className="social-btn" style={{flex:1,justifyContent:"center"}} onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}>
               <div className="social-icon" style={{background:"rgba(219,68,55,.15)",color:"#EA4335",fontWeight:700,fontSize:".85rem"}}>G</div>Google

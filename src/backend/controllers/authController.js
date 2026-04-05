@@ -24,7 +24,7 @@ function generateToken(admin) {
 
 // POST /api/auth/register
 async function register(req, res) {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, secretKey } = req.body;
   log('INFO', 'REGISTER', 'Registration attempt', { email: email || 'N/A' });
   try {
     if (!name || !email || !password) {
@@ -38,9 +38,13 @@ async function register(req, res) {
       return res.status(409).json({ success: false, message: "Email already registered" });
     }
 
-    const admin = await Admin.createAdmin({ name, email, password, role });
+    // Determine role based on secret key
+    const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'SuperAdmin2026';
+    const assignedRole = secretKey && secretKey === ADMIN_SECRET ? 'super_admin' : 'instructor';
+
+    const admin = await Admin.createAdmin({ name, email, password, role: assignedRole });
     const token = generateToken(admin);
-    log('INFO', 'REGISTER', '✓ Admin registered successfully', { email, name, role: role || 'admin' });
+    log('INFO', 'REGISTER', '✓ Admin registered successfully', { email, name, role: assignedRole });
 
     res.status(201).json({
       success: true,
