@@ -11,6 +11,8 @@ const studentAuthRoutes = require("./routes/studentAuthRoutes");
 const revenueRoutes     = require("./routes/revenueRoutes");
 const uploadRoutes      = require("./routes/uploadRoutes");
 const assignmentRoutes  = require("./routes/assignmentRoutes");
+const statusRoutes      = require("./routes/statusRoutes");
+const { startHealthCheckScheduler } = require("./services/healthCheckService");
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -34,6 +36,7 @@ app.use("/api/students",     studentRoutes);
 app.use("/api/revenue",      revenueRoutes);
 app.use("/api/upload",       uploadRoutes);
 app.use("/api/assignments", assignmentRoutes);
+app.use("/api/status",      statusRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => res.json({ status: "ok", db: dbStatus() }));
@@ -41,9 +44,10 @@ app.get("/api/health", (req, res) => res.json({ status: "ok", db: dbStatus() }))
 // Start server
 connectDB()
   .then(() => {
-    const server = app.listen(PORT, '127.0.0.1', () =>
-      console.log(`🚀 Admin server running on http://localhost:${PORT}`)
-    );
+    const server = app.listen(PORT, '127.0.0.1', () => {
+      console.log(`🚀 Admin server running on http://localhost:${PORT}`);
+      startHealthCheckScheduler(() => dbStatus(), () => true, 30 * 1000);
+    });
 
     server.on('error', (err) => {
       if (err.code === 'EADDRINUSE') {

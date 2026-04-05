@@ -9,6 +9,7 @@ import AuthPage        from './frontend/Auth/AuthPage';
 import AssignmentsPage from './frontend/Assignments/AssignmentsPage';
 import AnalyticsPage  from './frontend/Analytics/AnalyticsPage';
 import GoogleCallback  from './frontend/Auth/GoogleCallback';
+import StatusPage      from './frontend/Status/StatusPage';
 import { authService } from './frontend/Auth/services/authService';
 
 function ProtectedRoute({ children }) {
@@ -26,6 +27,7 @@ function App() {
           {/* Public */}
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/google-callback" element={<GoogleCallback />} />
+          <Route path="/status"              element={<ProtectedRoute><StatusPage /></ProtectedRoute>} />
 
           {/* Protected - Admin */}
           <Route path="/"            element={<ProtectedRoute><AdminLanding /></ProtectedRoute>} />

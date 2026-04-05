@@ -485,11 +485,7 @@ export default function AdminLanding() {
           <div className="nav-links">
             <Link to="/"            className={`nav-link${activeNav==='dashboard'?' active':''}`}   onClick={()=>setActiveNav('dashboard')}>Dashboard</Link>
             <Link to="/courses"     className={`nav-link${activeNav==='courses'?' active':''}`}     onClick={()=>setActiveNav('courses')}>Courses</Link>
-            <Link to="/students"    className={`nav-link${activeNav==='students'?' active':''}`}    onClick={()=>setActiveNav('students')}>Students</Link>
-            <Link to="/revenue"     className={`nav-link${activeNav==='revenue'?' active':''}`}     onClick={()=>setActiveNav('revenue')}>Revenue</Link>
             <Link to="/assignments" className={`nav-link${activeNav==='assignments'?' active':''}`} onClick={()=>setActiveNav('assignments')}>Assignments</Link>
-            <Link to="/analytics"   className={`nav-link${activeNav==='analytics'?' active':''}`}   onClick={()=>setActiveNav('analytics')}>Analytics</Link>
-            <Link to="/settings"    className={`nav-link${activeNav==='settings'?' active':''}`}    onClick={()=>setActiveNav('settings')}>Settings</Link>
           </div>
 
           {/* ── RIGHT ZONE ── */}
@@ -508,7 +504,7 @@ export default function AdminLanding() {
 
             {/* Live status */}
             <div className="nav-link-wrap" style={{position:'relative'}}>
-              <div className="nav-status" style={{borderColor:`${serverStatus.dot}30`,cursor:'default'}}>
+              <div className="nav-status" style={{borderColor:`${serverStatus.dot}30`,cursor:'pointer'}} onClick={()=>navigate('/status')}>
                 <div className="status-dot" style={{background:serverStatus.dot, boxShadow:`0 0 6px ${serverStatus.dot}`}}/>
                 <span style={{color:serverStatus.color}}>{serverStatus.label}</span>
               </div>
