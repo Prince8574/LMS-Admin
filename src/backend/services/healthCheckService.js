@@ -2,27 +2,30 @@ const http  = require('http');
 const https = require('https');
 const { saveCheck } = require('../models/HealthCheck');
 
+const ADMIN_URL   = (process.env.ADMIN_BACKEND_URL  || 'http://localhost:5000').replace(/\/$/, '');
+const STUDENT_URL = (process.env.STUDENT_BACKEND_URL || 'http://localhost:5001').replace(/\/$/, '');
+
 const SERVICES = [
   // ── Core Infrastructure ──────────────────────────────
-  { name: 'Admin Backend',          url: 'http://localhost:5000/api/health' },
-  { name: 'Student Backend',        url: 'http://localhost:5001/api/health' },
+  { name: 'Admin Backend',          url: `${ADMIN_URL}/api/health` },
+  { name: 'Student Backend',        url: `${STUDENT_URL}/api/health` },
   { name: 'MongoDB',                url: null },
   { name: 'Email Service',          url: null },
-  { name: 'Google OAuth',           url: 'http://localhost:5000/api/auth/google', expectRedirect: true },
+  { name: 'Google OAuth',           url: `${ADMIN_URL}/api/auth/google`, expectRedirect: true },
 
-  // ── Admin Panel APIs (port 5000) ─────────────────────
-  { name: 'Admin — Course API',     url: 'http://localhost:5000/api/courses',     expectAuth: true },
-  { name: 'Admin — Student API',    url: 'http://localhost:5000/api/students',    expectAuth: true },
-  { name: 'Admin — Assignment API', url: 'http://localhost:5000/api/assignments', expectAuth: true },
-  { name: 'Admin — Revenue API',    url: 'http://localhost:5000/api/revenue',     expectAuth: true },
-  { name: 'Admin — Settings API',   url: 'http://localhost:5000/api/settings',    expectAuth: true },
+  // ── Admin Panel APIs ─────────────────────────────────
+  { name: 'Admin — Course API',     url: `${ADMIN_URL}/api/courses`,     expectAuth: true },
+  { name: 'Admin — Student API',    url: `${ADMIN_URL}/api/students`,    expectAuth: true },
+  { name: 'Admin — Assignment API', url: `${ADMIN_URL}/api/assignments`, expectAuth: true },
+  { name: 'Admin — Revenue API',    url: `${ADMIN_URL}/api/revenue`,     expectAuth: true },
+  { name: 'Admin — Settings API',   url: `${ADMIN_URL}/api/settings`,    expectAuth: true },
 
-  // ── Student Panel APIs (port 5001) ───────────────────
-  { name: 'Student — Course API',   url: 'http://localhost:5001/api/courses' },
-  { name: 'Student — Enroll API',   url: 'http://localhost:5001/api/enrollments/my-courses', expectAuth: true },
-  { name: 'Student — Assign API',   url: 'http://localhost:5001/api/assignments',            expectAuth: true },
-  { name: 'Student — Community',    url: 'http://localhost:5001/api/posts',                  expectAuth: true },
-  { name: 'Student — AI Assistant', url: 'http://localhost:5001/api/ai/health' },
+  // ── Student Panel APIs ───────────────────────────────
+  { name: 'Student — Course API',   url: `${STUDENT_URL}/api/courses` },
+  { name: 'Student — Enroll API',   url: `${STUDENT_URL}/api/enrollments/my-courses`, expectAuth: true },
+  { name: 'Student — Assign API',   url: `${STUDENT_URL}/api/assignments`,            expectAuth: true },
+  { name: 'Student — Community',    url: `${STUDENT_URL}/api/posts`,                  expectAuth: true },
+  { name: 'Student — AI Assistant', url: `${STUDENT_URL}/api/ai/health` },
 ];
 
 function httpGet(url, timeout = 4000) {
