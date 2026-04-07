@@ -96,7 +96,7 @@ export function LoginForm({ onSuccess, switchToRegister, switchToForgot }) {
       <div className="card-title" style={{animation:"fadeUp .4s .15s ease both",opacity:0}}>
         {step===1 ? "Sign in to your account" : "Enter verification code"}
       </div>
-      <div className="card-sub" style={{animation:"fadeUp .4s .2s ease both",opacity:0}}>
+      <div className="card-sub" style={{animation:"fadeUp .4s .2s ease both",opacity:0,wordBreak:"break-word",overflowWrap:"anywhere"}}>
         {step===1 ? "Continue your learning journey" : `Code sent to ${email}`}
       </div>
 

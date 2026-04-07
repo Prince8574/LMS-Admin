@@ -127,7 +127,7 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
       <div className="card-title" style={{animation:"fadeUp .3s .1s ease both",opacity:0}}>
         {step===1 ? "Create your account" : step===2 ? "Secure your account" : "Verify your email"}
       </div>
-      <div className="card-sub" style={{animation:"fadeUp .3s .14s ease both",opacity:0}}>
+      <div className="card-sub" style={{animation:"fadeUp .3s .14s ease both",opacity:0,wordBreak:"break-word",overflowWrap:"anywhere"}}>
         {step===1 ? "Join 52,000+ learners on LearnVerse"
           : step===2 ? "Set a strong password to protect your account"
           : `We sent a 6-digit code to ${email}`}

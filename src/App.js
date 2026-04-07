@@ -11,6 +11,7 @@ import AnalyticsPage  from './frontend/Analytics/AnalyticsPage';
 import GoogleCallback  from './frontend/Auth/GoogleCallback';
 import StatusPage        from './frontend/Status/StatusPage';
 import InstructorsPage  from './frontend/Instructors';
+import ModerationPage   from './frontend/Moderation';
 import { authService } from './frontend/Auth/services/authService';
 
 import { Component } from 'react';
@@ -64,6 +65,7 @@ function App() {
           <Route path="/analytics"   element={<SuperAdminRoute><AnalyticsPage /></SuperAdminRoute>} />
           <Route path="/settings"    element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
           <Route path="/instructors" element={<SuperAdminRoute><RouteErrorBoundary><InstructorsPage /></RouteErrorBoundary></SuperAdminRoute>} />
+          <Route path="/moderation"  element={<SuperAdminRoute><ModerationPage /></SuperAdminRoute>} />
 
           {/* Fallback */}
           <Route path="*" element={<Navigate to={authService.isLoggedIn() ? '/' : '/auth'} replace />} />

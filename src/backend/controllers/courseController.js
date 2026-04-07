@@ -39,7 +39,7 @@ async function create(req, res) {
 async function getAll(req, res) {
   try {
     const { ObjectId } = require("mongodb");
-    const isSuperAdmin = req.admin?.role === 'super_admin';
+    const isSuperAdmin = req.admin?.role === 'super_admin' || req.admin?.role === 'admin';
     const filter = isSuperAdmin ? {} : {
       $or: [
         { adminId: new ObjectId(req.admin.id) },

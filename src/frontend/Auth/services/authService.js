@@ -143,7 +143,8 @@ export const authService = {
       const token = getToken();
       if (!token) return false;
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.role === 'super_admin';
+      // 'super_admin' OR legacy 'admin' role both get full access
+      return payload.role === 'super_admin' || payload.role === 'admin';
     } catch { return false; }
   },
 

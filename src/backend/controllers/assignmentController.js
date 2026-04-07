@@ -10,8 +10,8 @@ const usersCol = () => getDB().collection("users");
 exports.getAll = async (req, res) => {
   try {
     const { page = 1, limit = 20, search, type, priority } = req.query;
-    const isSuperAdmin = req.admin?.role === 'super_admin';
-    // super_admin sees all assignments; instructor sees only their own
+    const isSuperAdmin = req.admin?.role === 'super_admin' || req.admin?.role === 'admin';
+    // super_admin/admin sees all assignments; instructor sees only their own
     const q = { isActive: { $ne: false }, ...(isSuperAdmin ? {} : { createdBy: req.admin?.id || null }) };
     if (search)   q.$or = [{ title: new RegExp(search, "i") }, { courseName: new RegExp(search, "i") }];
     if (type)     q.type = type;

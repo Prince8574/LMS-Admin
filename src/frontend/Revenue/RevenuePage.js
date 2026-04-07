@@ -122,9 +122,9 @@ export default function RevenuePage() {
 
   // ── API state ──────────────────────────────────────────
   const [stats, setStats]           = useState(null);
-  const [transactions, setTxs]      = useState(TRANSACTIONS); // fallback to static
-  const [payouts, setPayouts]       = useState(PAYOUTS);
-  const [courseRevenue, setCourseRev] = useState(COURSES_REV);
+  const [transactions, setTxs]      = useState([]); // empty until API loads
+  const [payouts, setPayouts]       = useState([]);
+  const [courseRevenue, setCourseRev] = useState([]);
 
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
@@ -250,7 +250,7 @@ export default function RevenuePage() {
           </div>
 
           {/* ══ TAB: OVERVIEW ══ */}
-          {tab === 'overview' && <OverviewTab setTab={setTab} showToast={showToast} setTxDrawer={setTxDrawer} />}
+          {tab === 'overview' && <OverviewTab setTab={setTab} showToast={showToast} setTxDrawer={setTxDrawer} stats={stats} transactions={transactions} />}
 
           {/* ══ TAB: TRANSACTIONS ══ */}
           {tab === 'transactions' && (
