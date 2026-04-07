@@ -1,13 +1,12 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
-  family: 4, // force IPv4
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.BREVO_SMTP_LOGIN,
+    pass: process.env.BREVO_SMTP_PASSWORD,
   },
 });
 
@@ -103,7 +102,7 @@ async function sendOTPEmail(to, otp, { name, purpose } = {}) {
   };
 
   await transporter.sendMail({
-    from: `"LearnVerse" <${process.env.EMAIL_USER}>`,
+    from: `"LearnVerse" <${process.env.BREVO_SMTP_LOGIN}>`,
     to,
     subject: subjectMap[purpose] || "Your OTP Code - LearnVerse",
     html: otpTemplate({ otp, name, purpose }),
