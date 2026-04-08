@@ -320,7 +320,7 @@ export default function AdminLanding() {
   const [adminUser,setAdminUser]=useState(null);
   const [burst,setBurst]=useState({x:0,y:0,active:false});
 
-  const serverStatus = useServerStatus('http://localhost:5000/api/health');
+  const serverStatus = useServerStatus(`${process.env.REACT_APP_API_URL?.replace('/api/auth','') || 'http://localhost:5000'}/api/health`);
   const [heroLine,setHeroLine]=useState('');
   const navigate=useNavigate();
 

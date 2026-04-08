@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Sidebar } from "../../components/Sidebar";
 import * as THREE from "three";
 import { createSafeRenderer } from "../../utils/safeWebGL";
+import API_BASE from "../../config/api";
 
 const G = {
   purple:"linear-gradient(135deg,#7c2fff,#8b5cf6)",
@@ -806,7 +807,7 @@ function CourseBuilder({ onClose, editCourse, showToast, onSaved, admin = {} }) 
           // Auto-create assignment when publishing a new course
           if (status === "published" && !editCourse && form.title) {
             try {
-              await fetch("http://localhost:5000/api/assignments", {
+              await fetch(`${API_BASE}/api/assignments`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 body: JSON.stringify({
@@ -1651,7 +1652,7 @@ export default function AdminPanel() {
   const fetchCourses = () => {
     const token = localStorage.getItem("admin_token");
     const headers = token ? { Authorization:`Bearer ${token}` } : {};
-    fetch("http://localhost:5000/api/courses", { headers })
+    fetch(`${API_BASE}/api/courses`, { headers })
       .then(r => r.json())
       .then(d => {
         if (d.success) {
@@ -1690,7 +1691,7 @@ export default function AdminPanel() {
     if (!token) return;
 
     // Fetch admin profile
-    fetch("http://localhost:5000/api/auth/me", { headers:{ Authorization:`Bearer ${token}` } })
+    fetch(`${API_BASE}/api/auth/me`, { headers:{ Authorization:`Bearer ${token}` } })
       .then(r => r.json())
       .then(d => {
         if (d.success && (d.admin || d.data)) {

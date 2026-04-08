@@ -1,4 +1,5 @@
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+import API_BASE from '../../config/api';
+const BASE = `${API_BASE}/api`;
 
 function getToken() {
   return localStorage.getItem("admin_token") || "";

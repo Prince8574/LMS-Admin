@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Sidebar } from '../../components/Sidebar';
 
-const API = 'http://localhost:5000/api/status';
+import API_BASE from '../../config/api';
+const API = `${API_BASE}/api/status`;
 
 const STATUS_COLOR = { ok: '#4ade80', fail: '#ef4444', unknown: '#4d7a9e' };
 

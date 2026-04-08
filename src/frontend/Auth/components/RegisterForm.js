@@ -150,7 +150,7 @@ export function RegisterForm({ onSuccess, switchToLogin }) {
             value={secretKey} onChange={setSecretKey}
             hint="Enter secret key to register as Super Admin"/>
           <div style={{display:"flex",gap:10,marginBottom:20}}>
-            <button className="social-btn" style={{flex:1,justifyContent:"center"}} onClick={() => window.location.href = 'http://localhost:5000/api/auth/google'}>
+            <button className="social-btn" style={{flex:1,justifyContent:"center"}} onClick={() => window.location.href = `${process.env.REACT_APP_API_URL?.replace('/api/auth','') || 'http://localhost:5000'}/api/auth/google`}>
               <div className="social-icon" style={{background:"rgba(219,68,55,.15)",color:"#EA4335",fontWeight:700,fontSize:".85rem"}}>G</div>Google
             </button>
           </div>

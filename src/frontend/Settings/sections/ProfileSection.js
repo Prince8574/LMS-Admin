@@ -4,6 +4,7 @@ import { SectionCard } from '../components/SectionCard';
 import { FieldGroup } from '../components/FieldGroup';
 import { settingsService } from '../services/settingsService';
 import { AvatarCropModal } from '../components/AvatarCropModal';
+import API_BASE from '../../../config/api';
 
 function getRoleDisplay(role) {
   switch (role) {
@@ -172,7 +173,7 @@ export function ProfileSection({ save }) {
       if (token) {
         const formData = new FormData();
         formData.append('thumbnail', blob, 'avatar.jpg');
-        const res = await fetch('http://localhost:5000/api/upload/thumbnail?type=avatar', {
+        const res = await fetch(`${API_BASE}/api/upload/thumbnail?type=avatar`, {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: formData,

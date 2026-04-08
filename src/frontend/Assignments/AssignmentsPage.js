@@ -5,7 +5,8 @@ import { Sidebar } from "../../components/Sidebar";
 import GradeModal from "./components/GradeModal";
 import { createSafeRenderer } from "../../utils/safeWebGL";
 
-const API   = "http://localhost:5000/api/assignments";
+import API_BASE from '../../config/api';
+const API   = `${API_BASE}/api/assignments`;
 const token = () => localStorage.getItem("admin_token");
 
 const C = {
@@ -1093,7 +1094,7 @@ export default function AssignmentsPage() {
     setSubsLoading(true);
     try{
       const params=subsFilter!=="all"?"?status="+subsFilter:"";
-      const r=await fetch("http://localhost:5000/api/assignments/submissions"+params,{headers:{Authorization:"Bearer "+token()}});
+      const r=await fetch(`${API}/submissions`+params,{headers:{Authorization:"Bearer "+token()}});
       const d=await r.json();
       setSubmissions(Array.isArray(d.data)?d.data:[]);
     }catch(e){setSubmissions([]);}
@@ -1103,7 +1104,7 @@ export default function AssignmentsPage() {
 
   async function handleGrade(submissionId, gradeData){
     try{
-      const r=await fetch("http://localhost:5000/api/assignments/"+submissionId+"/grade",{
+      const r=await fetch(`${API}/${submissionId}/grade`,{
         method:"POST",
         headers:{"Content-Type":"application/json",Authorization:"Bearer "+token()},
         body:JSON.stringify(gradeData),

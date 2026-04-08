@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Sidebar } from '../../components/Sidebar';
 import { authService } from '../Auth/services/authService';
+import API_BASE from '../../config/api';
 import './InstructorsPage.css';
 
 const C = {
@@ -234,7 +235,7 @@ function Drawer({ instructor, onClose, onDelete, onToast }) {
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
-    fetch('http://localhost:5000/api/auth/instructors', { headers: { Authorization: 'Bearer ' + token } })
+    fetch(`${API_BASE}/api/auth/instructors`, { headers: { Authorization: 'Bearer ' + token } })
       .then(r => r.json())
       .then(json => {
         if (json.success) {
@@ -253,7 +254,7 @@ function Drawer({ instructor, onClose, onDelete, onToast }) {
     if (!dbData?._id) { onToast && onToast('Cannot delete — not found in DB'); return; }
     try {
       const token = localStorage.getItem('admin_token');
-      const res = await fetch(`http://localhost:5000/api/auth/instructors/${dbData._id}`, {
+      const res = await fetch(`${API_BASE}/api/auth/instructors/${dbData._id}`, {
         method: 'DELETE', headers: { Authorization: 'Bearer ' + token }
       });
       const json = await res.json();
@@ -334,7 +335,7 @@ function Drawer({ instructor, onClose, onDelete, onToast }) {
             ) : instructor.courses.map((c, i) => (
               <div key={i} style={{ background: 'rgba(255,255,255,.03)', border: '1px solid rgba(255,255,255,.06)', borderRadius: 10, padding: '10px 12px', display: 'flex', alignItems: 'center', gap: 10 }}>
                 {c.thumbnail
-                  ? <img src={c.thumbnail.startsWith('http') ? c.thumbnail : 'http://localhost:5000' + c.thumbnail} alt="" style={{ width: 44, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                  ? <img src={c.thumbnail.startsWith('http') ? c.thumbnail : API_BASE + c.thumbnail} alt="" style={{ width: 44, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
                   : <div style={{ width: 44, height: 32, borderRadius: 6, background: col + '18', display: 'grid', placeItems: 'center', fontSize: '.9rem', flexShrink: 0 }}>{c.emoji || '📘'}</div>
                 }
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -446,8 +447,8 @@ export default function InstructorsPage() {
     try {
       setLoading(true);
       const [coursesRes, instRes] = await Promise.allSettled([
-        fetch('http://localhost:5000/api/courses/all-instructors', { headers: authH() }).then(r => r.json()),
-        fetch('http://localhost:5000/api/auth/instructors', { headers: authH() }).then(r => r.json()),
+        fetch(`${API_BASE}/api/courses/all-instructors`, { headers: authH() }).then(r => r.json()),
+        fetch(`${API_BASE}/api/auth/instructors`, { headers: authH() }).then(r => r.json()),
       ]);
       if (coursesRes.status === 'fulfilled' && coursesRes.value.success) setCourses(coursesRes.value.data || []);
       if (instRes.status === 'fulfilled' && instRes.value.success) setDbInstructors(instRes.value.data || []);

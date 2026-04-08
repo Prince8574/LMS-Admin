@@ -12,7 +12,8 @@ const GR = {
   vt: "linear-gradient(135deg,#e8187c,#8b5cf6)",
 };
 const AVATAR_COLORS = [GR.em, GR.am, GR.cy, GR.ro, GR.vt];
-const BASE = "http://localhost:5000/api";
+import API_BASE from '../../../config/api';
+const BASE = `${API_BASE}/api`;
 
 function initials(name = "") {
   return name.split(" ").slice(0, 2).map(w => w[0]).join("").toUpperCase();

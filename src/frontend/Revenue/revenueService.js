@@ -1,4 +1,5 @@
-const API = "http://localhost:5000/api/revenue";
+import API_BASE from '../../config/api';
+const API = `${API_BASE}/api/revenue`;
 
 function authHeaders() {
   const token = localStorage.getItem("admin_token"); // matches authService.js key
