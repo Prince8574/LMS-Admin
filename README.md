@@ -292,7 +292,57 @@ SERVER_URL           = http://localhost:5000
 
 ---
 
-## � 10. Auth Flow
+## ☁️ 9b. Production Deployment
+
+### 🌐 Live URLs
+| Service | Platform | URL |
+|---------|----------|-----|
+| Frontend | Vercel | https://lms-admin-c2p8.vercel.app |
+| Backend | Render | https://lms-admin-emcy.onrender.com |
+| Database | MongoDB Atlas | learnverse cluster |
+
+### Frontend — Vercel
+1. Push to GitHub → Vercel auto-deploys from `main` branch
+2. Add env variable in Vercel dashboard → Environment Variables:
+   ```
+   REACT_APP_API_URL = https://lms-admin-emcy.onrender.com/api/auth
+   ```
+3. `admin/.env.production` and `admin/vercel.json` set `DISABLE_ESLINT_PLUGIN=true`
+
+### Backend — Render
+- Root directory: `src/backend`
+- Build command: `npm install`
+- Start command: `node server.js`
+
+Required env vars on Render:
+```env
+PORT=10000
+MONGO_URI=mongodb+srv://...
+DB_NAME=learnverse
+JWT_SECRET=...
+JWT_EXPIRES=7d
+CLIENT_URL=https://lms-admin-c2p8.vercel.app
+ALLOWED_ORIGINS=https://lms-admin-c2p8.vercel.app
+BREVO_SMTP_LOGIN=your_brevo_login
+BREVO_SMTP_PASSWORD=your_brevo_smtp_key
+BREVO_API_KEY=your_brevo_api_key
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+GOOGLE_CALLBACK_URL=https://lms-admin-emcy.onrender.com/api/auth/google/callback
+ADMIN_SECRET_KEY=SuperAdmin2026
+ADMIN_BACKEND_URL=https://lms-admin-emcy.onrender.com
+```
+
+### Key Production Changes
+- `server.js` binds to `0.0.0.0` instead of `127.0.0.1`
+- `ALLOWED_ORIGINS` env var for dynamic CORS
+- `src/config/api.js` — central API base URL (replaces all hardcoded `localhost:5000`)
+- `emailService.js` uses Brevo HTTP API (avoids SMTP port blocking on Render free tier)
+- `healthCheckService.js` uses `ADMIN_BACKEND_URL` / `STUDENT_BACKEND_URL` env vars
+
+---
+
+## 🔐 10. Auth Flow
 
 ```
 ┌─────────────────────────────────────────────────────┐
