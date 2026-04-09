@@ -517,7 +517,7 @@ function CourseListRow({ course: c, idx, onOpen, onEdit, onDelete }) {
 }
 
 /* ══════════════════════════════════════ COURSE MODAL ══════════════════════════════════════ */
-function CourseModal({ course: c, onClose, onEdit, onDelete }) {
+function CourseModal({ course: c, onClose, onEdit, onDelete, onPublishToggle }) {
   useEffect(() => {
     const esc = e => { if (e.key === "Escape") onClose(); };
     window.addEventListener("keydown", esc);
@@ -659,7 +659,18 @@ function CourseModal({ course: c, onClose, onEdit, onDelete }) {
           )}
           <div style={{ display:"flex", gap:7, paddingTop:3, borderTop:"1px solid rgba(255,255,255,.055)" }}>
             <button onClick={() => { onClose(); onEdit(c); }} className="btn-ghost" style={{ flex:1, justifyContent:"center", fontSize:".76rem" }}>✏ Edit Course</button>
-            <button className="btn-ghost" style={{ padding:"8px 13px", fontSize:".76rem" }}>📊 Analytics</button>
+            <button 
+              onClick={() => onPublishToggle && onPublishToggle(c)} 
+              className="btn-ghost" 
+              style={{ 
+                padding:"8px 13px", 
+                fontSize:".76rem",
+                color: c.status === "published" ? "#f0a500" : "#4ade80",
+                borderColor: c.status === "published" ? "rgba(240,165,0,.2)" : "rgba(74,222,128,.2)",
+                background: c.status === "published" ? "rgba(240,165,0,.05)" : "rgba(74,222,128,.05)"
+              }}>
+              {c.status === "published" ? "📦 Unpublish" : "🚀 Publish"}
+            </button>
             <button className="btn-ghost" style={{ padding:"8px 13px", fontSize:".76rem", color:"#ef4444", borderColor:"rgba(239,68,68,.2)" }} onClick={() => { onClose(); onDelete(c._id || c.id); }}>🗑 Delete</button>
           </div>
         </div>
@@ -1721,6 +1732,35 @@ export default function AdminPanel() {
     fetchCourses();
     setFilterKey(k => k + 1);
   };
+  
+  const handlePublishToggle = async (course) => {
+    const newStatus = course.status === "published" ? "draft" : "published";
+    const token = localStorage.getItem("admin_token");
+    if (!token) return;
+    
+    try {
+      const res = await fetch(`${API_BASE}/api/courses/${course._id || course.id}/publish`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ isPublished: newStatus === "published" })
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        showToast(newStatus === "published" ? "🚀 Course published!" : "📦 Course unpublished");
+        fetchCourses();
+        setModalCourse(null);
+      } else {
+        showToast("❌ Failed to update course status");
+      }
+    } catch (e) {
+      showToast("❌ Error updating course");
+    }
+  };
+  
   return (
     <div className="lv-layout">
       <style>{CSS}</style>
@@ -1742,7 +1782,7 @@ export default function AdminPanel() {
         </div>
       </div>
       {modalCourse && (
-        <CourseModal course={modalCourse} onClose={() => setModalCourse(null)} onEdit={c => { setModalCourse(null); handleEditCourse(c); }} onDelete={id => { setModalCourse(null); handleDelete(id); }}/>
+        <CourseModal course={modalCourse} onClose={() => setModalCourse(null)} onEdit={c => { setModalCourse(null); handleEditCourse(c); }} onDelete={id => { setModalCourse(null); handleDelete(id); }} onPublishToggle={handlePublishToggle}/>
       )}
       {builderOpen && (
         <>

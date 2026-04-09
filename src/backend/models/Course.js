@@ -46,7 +46,7 @@ const sanitize = (data) => ({
   price:         parseFloat(data.price) || 0,
   originalPrice: parseFloat(data.originalPrice) || 0,
   duration:      String(data.duration || "—"),
-  thumbnail:     String(data.thumbnail || ""),
+  thumbnail:     String(data.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800"),
   promoVideoUrl: String(data.promoVideoUrl || ""),
   tags:          toArray(data.tags || data.skills),
   outcomes:      toArray(data.outcomes),
