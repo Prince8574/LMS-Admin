@@ -21,7 +21,27 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
   : ["http://localhost:3000", "http://localhost:3001"];
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+// Add Vercel domains
+const productionOrigins = [
+  "https://lms-admin-wheat.vercel.app",
+  "https://lms-admin-mrprincekumarsingh143-gmailcoms-projects.vercel.app",
+  ...allowedOrigins
+];
+
+app.use(cors({ 
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (productionOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true 
+}));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
